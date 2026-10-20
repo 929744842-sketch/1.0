@@ -120,7 +120,7 @@
     <div class="doc" id="doc3">
       <div class="dhead">📄 文档3<span class="lock" id="lock3">🔒 加密</span></div>
       <div class="dsub">archive_03.dat · 密级：深 · 口令已分发</div>
-      <div class="dhint">提示：终章章节。</div>
+      <div class="dhint">提示：讲课时间。</div>
       <div class="field">
         <span class="p">&gt;</span>
         <input id="key3" type="password" autocomplete="off" placeholder="口令">
@@ -191,7 +191,7 @@
   
   function submit3(){
     var v=norm(key3.value).toLowerCase();
-    var passwords=['5','wu','五','第五章'];
+    var passwords=['03/8’o','03/8’O'];
     if(passwords.indexOf(v)>-1){
       lock3.textContent='🔓 已解锁'; lock3.classList.add('open');
       reply3.className='reply ok';
