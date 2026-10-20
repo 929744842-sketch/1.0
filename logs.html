@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>服务器日志 · 访问受限</title>
+<!-- fiction marker：《光标之下》ARG 游戏道具 · 加密文档页。全部内容为虚构。心理援助热线 12356。 -->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#05070a;color:#8fa2ab;font-family:"Consolas","Courier New",monospace;
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+       padding:40px 20px}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;
+       background:repeating-linear-gradient(0deg,rgba(120,200,220,.02) 0 1px,transparent 1px 3px)}
+  .card{width:min(680px,94vw)}
+  .tag{font-size:12px;color:#3f5560;letter-spacing:3px;margin-bottom:26px}
+  .intro{font-size:15px;line-height:2.2;color:#a9bcc4;border-left:2px solid #24414e;padding-left:16px;
+       margin-bottom:34px;letter-spacing:1px}
+  .intro b{color:#e0b06a;font-weight:400}
+
+  .docs{display:grid;gap:16px}
+  .doc{border:1px solid #16242c;background:rgba(16,26,32,.55);padding:20px 22px}
+  .dhead{display:flex;align-items:center;gap:10px;font-size:15px;color:#cfe0e5;letter-spacing:2px}
+  .dhead .lock{margin-left:auto;font-size:11px;color:#8a6a6a;border:1px solid #3a2a2a;
+       padding:2px 8px;letter-spacing:2px}
+  .dhead .lock.open{color:#6fae9a;border-color:#2a4a3e}
+  .dsub{font-size:11px;color:#3f5560;letter-spacing:1px;margin:8px 0 10px}
+  .dhint{font-size:12px;color:#8a7a5a;letter-spacing:1px;margin-bottom:14px}
+  .dhint b{color:#e0b06a;font-weight:400}
+  .field{display:flex;align-items:center;border-bottom:1px solid #1b2b34;padding-bottom:8px}
+  .field .p{color:#3f6a78;font-size:15px;margin-right:10px}
+  input{flex:1;background:transparent;border:none;outline:none;color:#cfe0e5;font-size:16px;
+       letter-spacing:4px;font-family:inherit;padding:8px 0}
+  .reply{margin-top:14px;font-size:13px;letter-spacing:2px;color:#8a6a6a;min-height:1.6em}
+  .reply.ok{color:#6fae9a}
+  .dout{display:none;margin-top:16px;border-top:1px dashed #1b2b34;padding-top:14px;
+       font-size:13px;line-height:2;color:#9fb6be;white-space:pre-wrap}
+  .dout .bad{color:#8a6a6a}
+
+  /* 文档2 解密内容 */
+  .panel{display:none;margin-top:16px;border-top:1px dashed #1b2b34;padding-top:16px}
+  .ptitle{font-size:13px;color:#7fd0b0;letter-spacing:2px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .ptitle .sub{margin-left:auto;font-size:11px;color:#5f7a72;letter-spacing:1px}
+  .map{position:relative;width:100%;height:190px;background:#0a1418;border:1px solid #1b2b34;
+       border-radius:6px;overflow:hidden}
+  .map .grid{position:absolute;inset:0;background-image:
+       linear-gradient(rgba(120,200,220,.06) 1px,transparent 1px),
+       linear-gradient(90deg,rgba(120,200,220,.06) 1px,transparent 1px);
+       background-size:34px 34px}
+  .hot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+  @keyframes heatfade{0%,100%{opacity:.25}50%{opacity:1}}
+  .maplabel{position:absolute;left:10px;bottom:8px;font-size:10px;color:#3f6a78;letter-spacing:1px}
+
+  /* 种子名录 · 树枝分节 */
+  .tree{margin-top:6px;font-size:13px}
+  .root{position:relative}
+  .root>.leaf{margin-left:0}
+  .branch{position:relative;padding-left:26px;margin:6px 0 2px}
+  .branch::before{content:"";position:absolute;left:10px;top:0;bottom:0;width:1px;
+       background:linear-gradient(#2f6d57,#1d4436)}
+  .leaf{position:relative;padding:5px 12px;margin:4px 0;border-radius:4px;
+       background:rgba(46,139,87,.06);border-left:2px solid #2f6d57;display:inline-block}
+  .leaf::before{content:"›";color:#3f8a68;margin-right:8px}
+  .branch>.leaf::after{content:"";position:absolute;left:-16px;top:50%;width:10px;height:1px;
+       background:#2f6d57}
+  .leaf .nm{letter-spacing:1px}
+  .leaf .tag{margin-left:10px;font-size:11px;letter-spacing:1px;padding:1px 7px;border-radius:9px}
+  .leaf.k .nm{color:#7f8a86}
+  .leaf.k .tag{color:#9aa4a0;background:rgba(150,160,156,.12);border:1px solid #3a4440}
+  .leaf.k{border-left-color:#3a4440;background:rgba(120,130,126,.05)}
+  .leaf.r .nm{color:#d97a6e}
+  .leaf.r .tag{color:#e8927f;background:rgba(217,122,110,.12);border:1px solid #4a2a26}
+  .leaf.r{border-left-color:#a04438;background:rgba(217,122,110,.06)}
+  .root>.leaf{border-left-color:#2e8b57;background:rgba(46,139,87,.12)}
+  .root>.leaf .nm{color:#8fe0b0}
+  .pager{margin-top:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px}
+  .pager .pg{color:#5f7a72;border:1px solid #1b2b34;padding:2px 9px;border-radius:4px;cursor:default}
+  .pager .pg.on{color:#0a1418;background:#7fd0b0;border-color:#7fd0b0}
+  .pager .info{margin-left:auto;color:#3f6a78;letter-spacing:1px}
+  .foot{margin-top:40px;font-size:11px;color:#2d3d45;letter-spacing:1px;line-height:2;text-align:center}
+  .shake{animation:sh .4s}
+  @keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="tag">YIJIA-PSY.COM / LOGS / RESTRICTED</div>
+  <div class="intro">
+    有些门不需要钥匙，需要<b>代价</b>。<br>
+    —— 请选择要解密的文档，并输入访问口令。
+  </div>
+
+  <div class="docs">
+    <!-- 文档1 -->
+    <div class="doc" id="doc1">
+      <div class="dhead">📄 文档1<span class="lock" id="lock1">🔒 加密</span></div>
+      <div class="dsub">archive_01.dat · 密级：深 · 口令已分发</div>
+      <div class="dhint">提示：注意<b>标红词</b>的拼音。</div>
+      <div class="field">
+        <span class="p">&gt;</span>
+        <input id="key1" type="password" autocomplete="off" placeholder="口令">
+      </div>
+      <div class="reply" id="reply1"></div>
+    </div>
+
+    <!-- 文档2 -->
+    <div class="doc" id="doc2">
+      <div class="dhead">📄 文档2<span class="lock" id="lock2">🔒 加密</span></div>
+      <div class="dsub">archive_02.dat · 密级：中 · 口令已分发</div>
+      <div class="dhint">提示：<b>古籍</b>中的数字很重要。</div>
+      <div class="field">
+        <span class="p">&gt;</span>
+        <input id="key2" type="password" autocomplete="off" placeholder="口令">
+      </div>
+      <div class="reply" id="reply2"></div>
+    </div>
+
+    <!-- 文档3 -->
+    <div class="doc" id="doc3">
+      <div class="dhead">📄 文档3<span class="lock" id="lock3">🔒 加密</span></div>
+      <div class="dsub">archive_03.dat · 密级：深 · 口令已分发</div>
+      <div class="dhint">提示：终章章节。</div>
+      <div class="field">
+        <span class="p">&gt;</span>
+        <input id="key3" type="password" autocomplete="off" placeholder="口令">
+      </div>
+      <div class="reply" id="reply3"></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    本页面为《光标之下》ARG 游戏道具 · 全部内容为虚构<br>
+    心理援助热线 12356（24 小时）
+  </div>
+</div>
+
+<script>
+(function(){
+  try{ parent.postMessage({__arg:'nav', file:'logs.html', disp:'yijia-psy.com/服务器日志'}, '*'); }catch(e){}
+
+  function shake(el){
+    el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+  }
+  function norm(s){ return (s||'').trim(); }
+
+  /* ====== 文档1：口令 qicheng → dawn.html ====== */
+  var key1=document.getElementById('key1'), reply1=document.getElementById('reply1'),
+      lock1=document.getElementById('lock1');
+  function submit1(){
+    var v=norm(key1.value).toLowerCase();
+    if(v==='qicheng'){
+      lock1.textContent='🔓 已解锁'; lock1.classList.add('open');
+      reply1.className='reply ok';
+      reply1.textContent='口令正确。正在解密文档1……';
+      key1.disabled=true;
+      setTimeout(function(){ location.href='dawn.html'; },700);
+    }else{
+      shake(document.getElementById('doc1'));
+      reply1.className='reply';
+      reply1.textContent='口令不对。文档1拒绝访问。';
+      key1.value=''; key1.focus();
+    }
+  }
+  key1.addEventListener('keydown',function(e){ if(e.key==='Enter') submit1(); });
+
+  /* ====== 文档2：口令 2500 → doc2.html ====== */
+  var key2=document.getElementById('key2'), reply2=document.getElementById('reply2'),
+      lock2=document.getElementById('lock2');
+
+  function submit2(){
+    var v=norm(key2.value);
+    if(v==='2500'){
+      lock2.textContent='🔓 已解锁'; lock2.classList.add('open');
+      reply2.className='reply ok';
+      reply2.textContent='口令正确。正在打开文档2……';
+      key2.disabled=true;
+      setTimeout(function(){ location.href='doc2.html'; },700);
+    }else{
+      shake(document.getElementById('doc2'));
+      reply2.className='reply';
+      reply2.textContent='口令不对。文档2拒绝访问。';
+      key2.value=''; key2.focus();
+    }
+  }
+  key2.addEventListener('keydown',function(e){ if(e.key==='Enter') submit2(); });
+
+  /* ====== 文档3：口令 zhouyi → doc3.html ====== */
+  var key3=document.getElementById('key3'), reply3=document.getElementById('reply3'),
+      lock3=document.getElementById('lock3');
+  
+  function submit3(){
+    var v=norm(key3.value).toLowerCase();
+    var passwords=['5','wu','五','第五章'];
+    if(passwords.indexOf(v)>-1){
+      lock3.textContent='🔓 已解锁'; lock3.classList.add('open');
+      reply3.className='reply ok';
+      reply3.textContent='口令正确。正在打开文档3……';
+      key3.disabled=true;
+      setTimeout(function(){ location.href='doc3.html'; },700);
+    }else{
+      shake(document.getElementById('doc3'));
+      reply3.className='reply';
+      reply3.textContent='口令不对。文档3拒绝访问。';
+      key3.value=''; key3.focus();
+    }
+  }
+  key3.addEventListener('keydown',function(e){ if(e.key==='Enter') submit3(); });
+
+  setTimeout(function(){key1.focus();},200);
+})();
+</script>
+</body>
+</html>

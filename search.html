@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>搜索</title>
+<!-- fiction marker：《光标之下》ARG 游戏道具 · 伪搜索页。全部内容为虚构。心理援助热线 12356。 -->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%}
+  body{background:#fff;color:#202124;font-family:"Segoe UI",system-ui,sans-serif;min-height:100vh}
+  .bar{border-bottom:1px solid #e6e8ea;padding:18px 24px;display:flex;align-items:center;gap:16px;
+       position:sticky;top:0;background:#fff;z-index:3}
+  .logo{font-size:20px;font-weight:600;letter-spacing:1px}
+  .logo b:nth-child(1){color:#4285f4}.logo b:nth-child(2){color:#ea4335}
+  .logo b:nth-child(3){color:#fbbc05}.logo b:nth-child(4){color:#4285f4}
+  .logo b:nth-child(5){color:#34a853}.logo b:nth-child(6){color:#ea4335}
+  .sbox{flex:1;max-width:640px;display:flex;height:42px;border:1px solid #dfe1e5;border-radius:22px;overflow:hidden}
+  .sbox:hover{box-shadow:0 1px 6px rgba(32,33,36,.18)}
+  .sbox input{flex:1;border:none;outline:none;padding:0 20px;font-size:15px;font-family:inherit}
+  .sbox button{border:none;background:#4285f4;color:#fff;padding:0 20px;cursor:pointer;font-size:14px}
+
+  .wrap{max-width:680px;padding:10px 24px 60px;margin-left:max(0px,8vw)}
+  .stat{font-size:12px;color:#70757a;margin:22px 0 4px}
+  .result{padding:16px 0}
+  .result .url{font-size:13px;color:#5f6368;margin-bottom:4px}
+  .result .url span{color:#202124}
+  .result a.title{font-size:19px;color:#1a0dab;text-decoration:none;line-height:1.4}
+  .result a.title:hover{text-decoration:underline}
+  .result .title{font-size:19px;color:#1a0dab;line-height:1.4;cursor:default}
+  .result .desc{font-size:14px;color:#4d5156;line-height:1.7;margin-top:6px}
+  .result .desc b{color:#202124}
+  .result .kv{font-size:13px;color:#5f6368;margin-top:8px;line-height:1.9}
+  .result .kv a{color:#1a0dab;text-decoration:none}
+  .result .kv a:hover{text-decoration:underline}
+  .empty{padding:40px 0;color:#70757a;font-size:15px;line-height:2}
+  .empty b{color:#202124}
+  .hint{margin-top:26px;font-size:13px;color:#9aa0a6;line-height:2;border-top:1px solid #eceff1;padding-top:16px}
+  .nov{background:#f8f9fa;border:1px solid #eceff1;border-radius:8px;padding:14px 18px;margin-top:18px;font-size:13px;color:#5f6368;line-height:2}
+</style>
+</head>
+<body>
+  <div class="bar">
+    <div class="logo"><b>S</b><b>e</b><b>a</b><b>r</b><b>c</b><b>h</b></div>
+    <form class="sbox" id="sf">
+      <input id="q" autocomplete="off" placeholder="搜索本地结果">
+      <button type="submit">搜索</button>
+    </form>
+  </div>
+
+  <div class="wrap" id="wrap"></div>
+
+<script>
+(function(){
+  var params=new URLSearchParams(location.search);
+  var raw=params.get('q')||'';
+  var q=raw.trim();
+  try{ parent.postMessage({__arg:'nav', file:'search.html?q='+encodeURIComponent(q), disp:q}, '*'); }catch(e){}
+
+  document.getElementById('q').value=q;
+  document.getElementById('sf').addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=document.getElementById('q').value.trim();
+    location.href='search.html?q='+encodeURIComponent(v);
+  });
+
+  function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+  function norm(s){ return (s||'').replace(/[\s　]/g,'').toLowerCase(); }
+  var n=norm(q);
+  var wrap=document.getElementById('wrap');
+  var html='';
+
+  var hitBZ = n.indexOf('白昼')>-1 || n.indexOf('读书会')>-1;
+  var hitYJ = n.indexOf('壹家')>-1 || n.indexOf('心理')>-1 || n.indexOf('yijia')>-1 || n.indexOf('尔嘉')>-1 || n.indexOf('erjia')>-1;
+  var hitJY = n.indexOf('教育')>-1 || n.indexOf('花园实验小学')>-1 || n.indexOf('实验小学')>-1;
+  var hitMK = n.indexOf('猕猴桃')>-1 || n.indexOf('ai助手')>-1 || n.indexOf('ai')>-1 || n.indexOf('智能助手')>-1 || n.indexOf('对话')>-1;
+  var hitNB = n.indexOf('北方天文所')>-1 || n.indexOf('天文所')>-1 || n.indexOf('北方')>-1;
+
+  var hitAll = hitBZ || hitYJ;
+  var resCount = 0;
+  if(hitNB){
+    resCount = 6;
+  }else if(hitAll){
+    resCount = 5;
+  }else{
+    if(hitBZ||hitYJ) resCount++;
+    if(hitJY) resCount++;
+    if(hitMK) resCount++;
+  }
+  html+='<div class="stat">约 '+resCount+' 条本地结果，用时 0.00'+(q.length%9)+' 秒 · 只检索本地缓存</div>';
+
+  if(hitNB){
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 政务信息</div>'
+      +'<a class="title" href="kaoguwenwu.html">国家考古文物局 — 1997年考古重大发现</a>'
+      +'<div class="desc">我局考古队在凼地村发现公元前 200 年左右墓葬，出土<b>简牍文书约二十件</b>。</div>'
+      +'<div class="kv">官网：<a href="kaoguwenwu.html">kaoguwenwu.com</a></div>'
+      +'</div>';
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 气象动态</div>'
+      +'<div class="title">北岸气象局 — 近日北岸气象局检测到异常天气</div>'
+      +'<div class="desc">北岸地区近期出现反常气象，请相关单位注意防范。</div>'
+      +'</div>';
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 场馆信息</div>'
+      +'<div class="title">北岸天文馆 — 北岸天文馆欢迎您的到来！</div>'
+      +'<div class="desc">常年开放天文展览与观测活动，欢迎参观。</div>'
+      +'</div>';
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 场馆信息</div>'
+      +'<div class="title">北岸博物馆 — 博物馆正在维护升级，敬请期待</div>'
+      +'<div class="desc">因内部维护升级，本馆暂停对外开放，恢复时间另行通知。</div>'
+      +'</div>';
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 展览资讯</div>'
+      +'<div class="title">看展网 — 点击即可查看最近上新展览~</div>'
+      +'<div class="desc">汇集本地各大展馆最新展览信息。</div>'
+      +'</div>';
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › mehotel.kiwi</div>'
+      +'<div class="title">猕猴桃ai助手，可以对话的智能助手</div>'
+      +'<div class="desc">mehotel.kiwi 提供的智能对话助手。</div>'
+      +'</div>';
+  }else{
+  if(hitBZ || hitAll){
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 白昼社</div>'
+      +'<a class="title" href="yijia.html">白昼社 — 公益读书会</a>'
+      +'<div class="desc">由 <b>“壹家心理”</b> 发起，面向本市各大中小学校的公益读书会“白昼社”，以“生命教育”为主题，目前已覆盖 <b>37 所</b>学校。</div>'
+      +'<div class="kv">相关机构：<a href="yijia.html">壹家心理责任有限公司</a> · 官网 yijia-psy.com</div>'
+      +'</div>';
+  }
+  if(hitYJ || hitAll){
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 企业信息</div>'
+      +'<a class="title" href="yijia.html">壹家心理责任有限公司</a>'
+      +'<div class="desc">本市心理健康服务机构。经营范围：心理咨询、心理测评、读书会策划。</div>'
+      +'<div class="kv">官网：<a href="yijia.html">yijia-psy.com</a> · 服务热线 12345678910</div>'
+      +'</div>';
+  }
+  if(hitAll){
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 心理咨询</div>'
+      +'<div class="title">尔嘉心理咨询，给你超壹线的体验！</div>'
+      +'</div>';
+  }else if(hitYJ){
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 心理咨询</div>'
+      +'<div class="title">尔嘉心理咨询，给你超壹线的体验！</div>'
+      +'</div>';
+  }
+  if(hitJY || hitAll){
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › 教育动态</div>'
+      +'<div class="title">心理健康教育走进花园实验小学</div>'
+      +'</div>';
+  }
+  if(hitMK || hitAll){
+    html+='<div class="result">'
+      +'<div class="url"><span>本地缓存</span> › AI 助手</div>'
+      +'<div class="title">猕猴桃AI助手，可以对话的智能助手</div>'
+      +'</div>';
+  }
+  }
+
+  if(!hitAll && !hitJY && !hitMK && !hitNB){
+    html='<div class="stat">本地结果</div>'
+      +'<div class="empty">未找到与“<b>'+esc(q)+'</b>”相关的本地结果。<br>'
+      +'试试别的词。或者……有些东西，只留了一条路。</div>';
+  }
+
+  html+='<div class="hint">提示：本页只检索本地缓存，不联网。弟弟留下的痕迹不多，但都在这一台电脑里。</div>';
+  wrap.innerHTML=html;
+})();
+</script>
+</body>
+</html>

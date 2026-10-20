@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>新标签页</title>
+<!-- fiction marker：《光标之下》ARG 游戏道具。全部内容为虚构。心理援助热线 12356。 -->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:#0b0f13;color:#c3cfd5;font-family:"Segoe UI",system-ui,sans-serif;
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:9vh 24px 40px}
+  .brand{font-size:13px;letter-spacing:8px;color:#4a5a63;margin-bottom:40px}
+  .logo{font-size:34px;letter-spacing:2px;color:#dbe8ee;margin-bottom:34px;font-weight:300}
+  .logo span{color:#5f8ba0}
+  .searchbar{display:flex;width:min(600px,88vw);height:46px;background:#111720;
+    border:1px solid #263039;border-radius:24px;overflow:hidden}
+  .searchbar input{flex:1;background:transparent;border:none;outline:none;color:#dbe8ee;
+    padding:0 22px;font-size:14px;font-family:inherit}
+  .searchbar button{width:64px;border:none;background:#16303d;color:#cfe0e5;font-size:15px;cursor:pointer}
+  .searchbar button:hover{background:#1d4252}
+
+  .hist{width:min(600px,88vw);margin-top:56px}
+  .hist h3{font-size:12px;letter-spacing:4px;color:#4a5a63;font-weight:400;margin-bottom:14px;
+    border-bottom:1px solid #1a222a;padding-bottom:10px}
+  .hist .row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:8px;cursor:pointer;
+    border:1px solid transparent}
+  .hist .row:hover{background:#111820;border-color:#22303a}
+  .hist .row .ic{font-size:16px;opacity:.7}
+  .hist .row .url{color:#9fd0e4;font-size:14px;letter-spacing:.5px}
+  .hist .row .url i{font-style:normal;color:#5f7078}
+  .hist .row .time{margin-left:auto;font-size:12px;color:#5f7078}
+  .hist .note{margin-top:14px;font-size:12px;color:#4a5a63;letter-spacing:1px}
+  .hit{position:relative}
+  .hit::after{content:"";position:absolute;right:23px;top:50%;height:8px;width:8px;border-radius:50%;
+    transform:translateY(-50%);background:#e23b3b;box-shadow:0 0 8px #e23b3b;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{transform:translateY(-50%) scale(1);opacity:1}50%{transform:translateY(-50%) scale(1.4);opacity:.5}}
+</style>
+</head>
+<body>
+  <div class="brand">EDGE · 工作标签页</div>
+  <div class="logo">搜 索<span>_</span></div>
+  <form class="searchbar" id="sf">
+    <input id="q" placeholder="搜索，或输入网址" autocomplete="off" spellcheck="false">
+    <button type="submit">搜索</button>
+  </form>
+
+  <div class="hist">
+    <h3>历史记录 · 最近</h3>
+    <div class="row hit" id="h1">
+      <span class="ic">🌐</span>
+      <span class="url"><i>https://</i>w-7x3k.net</span>
+      <span class="time">03/11 23:47</span>
+    </div>
+    <div class="note">只保留了这一条。往前翻，什么都没有——像被人清空过。</div>
+  </div>
+
+<script>
+(function(){
+  try{ parent.postMessage({__arg:'nav', file:'home.html', disp:''}, '*'); }catch(e){}
+  document.getElementById('sf').addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=document.getElementById('q').value.trim();
+    if(v) location.href='search.html?q='+encodeURIComponent(v);
+  });
+  document.getElementById('h1').addEventListener('click',function(){
+    location.href='entringpage.html';
+  });
+})();
+</script>
+</body>
+</html>

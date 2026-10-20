@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>浏览器</title>
+<!-- fiction marker：《光标之下》ARG 游戏道具 · 浏览器外壳。全部内容为虚构。心理援助热线 12356。 -->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:#0a0c0f;display:flex;flex-direction:column;overflow:hidden;
+       font-family:"Segoe UI",system-ui,sans-serif}
+  .chrome{height:46px;background:#14181d;border-bottom:1px solid #232a31;
+    display:flex;align-items:center;gap:8px;padding:0 10px;flex:none}
+  .nav-btn{width:32px;height:32px;border:none;background:transparent;color:#9db0ba;
+    font-size:16px;border-radius:6px;cursor:pointer}
+  .nav-btn:hover{background:#232a31;color:#dbe8ee}
+  .nav-btn:disabled{opacity:.3;cursor:default}
+  .desk{width:auto;padding:0 10px;font-size:12px;color:#9db0ba;border:1px solid #2a333b;
+    background:#0e1216;border-radius:6px;height:30px;cursor:pointer;display:flex;align-items:center;gap:5px}
+  .desk:hover{border-color:#3f6a78;color:#cfe0e5}
+  .omni{flex:1;height:32px;background:#0b0f13;border:1px solid #2a333b;border-radius:16px;
+    color:#cfe0e5;padding:0 16px;font-size:13px;letter-spacing:.5px;outline:none;font-family:inherit}
+  .omni:focus{border-color:#3f6a78;background:#0d1216}
+  .go{height:30px;padding:0 14px;border:1px solid #2a333b;background:#0e1216;color:#9db0ba;
+    border-radius:6px;font-size:12px;cursor:pointer}
+  .go:hover{border-color:#3f6a78;color:#cfe0e5}
+  #view{flex:1;width:100%;border:none;background:#fff}
+</style>
+</head>
+<body>
+<div class="chrome">
+  <button class="desk" id="toDesktop" title="返回桌面">⊞ 桌面</button>
+  <button class="nav-btn" id="back" title="后退">‹</button>
+  <button class="nav-btn" id="fwd" title="前进">›</button>
+  <button class="nav-btn" id="reload" title="刷新">⟳</button>
+  <input class="omni" id="omni" placeholder="搜索，或输入网址" autocomplete="off" spellcheck="false">
+  <button class="go" id="go">转到</button>
+</div>
+<iframe id="view" src="home.html"></iframe>
+
+<script>
+(function(){
+  var view=document.getElementById('view');
+  var omni=document.getElementById('omni');
+  var back=document.getElementById('back'), fwd=document.getElementById('fwd');
+
+  var stack=[], idx=-1, suppress=false;
+
+  // 伪域名 / 关键词 → 本地页面
+  function resolve(raw){
+    var q=(raw||'').trim();
+    if(q==='') return {file:'home.html', disp:''};
+    var low=q.toLowerCase();
+    if(low.indexOf('w-7x3k')>-1 || low.indexOf('黎明')>-1)
+      return {file:'entringpage.html', disp:'w-7x3k.net'};
+    if(low.indexOf('yijia')>-1 || q.indexOf('壹家')>-1)
+      return {file:'yijia.html', disp:'yijia-psy.com'};
+    if(q.indexOf('日志')>-1 || low.indexOf('log')>-1)
+      return {file:'logs.html', disp:'yijia-psy.com/服务器日志'};
+    if(low.indexOf('kaoguwenwu')>-1 || q.indexOf('考古')>-1)
+      return {file:'kaoguwenwu.html', disp:'kaoguwenwu.com'};
+    return {file:'search.html?q='+encodeURIComponent(q), disp:q};
+  }
+
+  function load(entry){
+    view.src=entry.file;
+    omni.value=entry.disp||'';
+  }
+  function push(entry){
+    if(stack[idx] && stack[idx].file===entry.file && stack[idx].disp===entry.disp) return;
+    stack=stack.slice(0,idx+1);
+    stack.push(entry); idx=stack.length-1;
+    sync();
+  }
+  function sync(){
+    back.disabled=idx<=0;
+    fwd.disabled=idx>=stack.length-1;
+  }
+
+  // 子页面通过 postMessage 上报当前地址
+  window.addEventListener('message',function(e){
+    var d=e.data; if(!d||d.__arg!=='nav') return;
+    var entry={file:d.file||'', disp:d.disp||''};
+    omni.value=entry.disp||'';
+    if(suppress){ suppress=false; sync(); return; }
+    push(entry);
+  });
+
+  function navigate(raw){
+    var e=resolve(raw); load(e); push(e);
+  }
+
+  omni.addEventListener('keydown',function(ev){
+    if(ev.key==='Enter'){ navigate(omni.value); }
+  });
+  document.getElementById('go').addEventListener('click',function(){ navigate(omni.value); });
+
+  back.addEventListener('click',function(){ if(idx>0){ idx--; suppress=true; load(stack[idx]); sync(); } });
+  fwd.addEventListener('click',function(){ if(idx<stack.length-1){ idx++; suppress=true; load(stack[idx]); sync(); } });
+  document.getElementById('reload').addEventListener('click',function(){
+    var e=stack[idx]||{file:'home.html',disp:''}; view.src=e.file;
+  });
+  document.getElementById('toDesktop').addEventListener('click',function(){ location.href='2desktop.html'; });
+
+  // 初始页
+  stack=[{file:'home.html',disp:''}]; idx=0; sync();
+})();
+</script>
+</body>
+</html>

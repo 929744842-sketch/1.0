@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>黎明会吧_万度贴吧</title>
+
+<style>
+  :root{--ink:#b9c4c9;--dim:#5a686e;--bg:#0b0d10;--line:#1c242a;
+        --tb:#2f78c4;--tb-d:#22589c;--link:#3388cc;--txt:#333;--gray:#999;--bd:#e5e6e8}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{min-height:100%}
+  body{background:#f0f2f5;color:#333;font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+       min-height:100vh}
+
+  /* ============ 门禁：贴吧登录页 ============ */
+  #gate{min-height:100vh;display:flex;flex-direction:column;background:#f0f2f5}
+  #gate .tb-login-reg{font-size:13px;opacity:.92}
+  #gate .tb-login-reg a{color:#fff;text-decoration:underline;cursor:pointer}
+  .lg-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:44px 20px}
+  .lg-card{width:min(400px,92vw);background:#fff;border:1px solid var(--bd);border-radius:8px;
+       box-shadow:0 10px 34px rgba(30,60,90,.1);padding:32px 34px}
+  .lg-head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .lg-avatar{width:52px;height:52px;border-radius:8px;background:linear-gradient(135deg,#3f8fd8,#22589c);
+       color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;flex:none;
+       font-family:"Songti SC",serif}
+  .lg-title{font-size:19px;font-weight:700;color:#222}
+  .lg-sub{font-size:12px;color:var(--gray);margin-top:5px}
+  .lg-tabs{display:flex;gap:24px;border-bottom:1px solid #eee;margin-bottom:22px}
+  .lg-tabs span{padding:10px 2px;font-size:14px;color:#888;cursor:default;border-bottom:2px solid transparent}
+  .lg-tabs span.on{color:var(--tb);border-bottom-color:var(--tb);font-weight:600}
+  .lg-field{display:flex;align-items:center;gap:10px;border:1px solid #dcdfe3;border-radius:6px;
+       padding:0 14px;margin-bottom:14px;height:48px;background:#fff}
+  .lg-field:focus-within{border-color:var(--tb);box-shadow:0 0 0 2px rgba(47,120,196,.12)}
+  .lg-field .ico{font-size:15px;opacity:.55;flex:none}
+  .lg-field input{flex:1;border:none;outline:none;font-size:15px;font-family:inherit;color:#222;background:transparent}
+  .lg-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#888;margin:4px 0 20px}
+  .lg-row a{color:var(--link);cursor:pointer}
+  .lg-btn{width:100%;height:46px;border:none;border-radius:6px;background:var(--tb);color:#fff;
+       font-size:16px;letter-spacing:6px;cursor:pointer}
+  .lg-btn:hover{background:var(--tb-d)}
+  #reply{margin-top:14px;font-size:13px;color:#b04a4a;min-height:1.4em;text-align:center}
+  .lg-quote{margin-top:20px;text-align:center;font-size:13px;color:#a7b0b8;letter-spacing:1px;
+       border-top:1px dashed #ececec;padding-top:16px;font-family:"Songti SC","Noto Serif SC",serif}
+  .lg-foot{padding:24px 16px;text-align:center;font-size:12px;color:#9aa2aa;line-height:2}
+  .lg-foot b{color:#7f96a6;font-weight:400}
+
+  /* ============ 贴吧风论坛 ============ */
+  #forum{display:none;min-height:100vh;padding-bottom:80px}
+  .tb-bar{background:linear-gradient(#2f78c4,#22589c);color:#fff}
+  .tb-bar-in{max-width:980px;margin:0 auto;padding:0 16px;height:44px;display:flex;align-items:center;gap:16px}
+  .tb-logo{font-size:20px;font-weight:700;letter-spacing:2px}
+  .tb-logo small{font-size:12px;font-weight:400;opacity:.85;letter-spacing:1px;margin-left:6px}
+  .tb-search{margin-left:auto;display:flex;height:30px;background:#fff;border-radius:15px;overflow:hidden;width:min(320px,42vw)}
+  .tb-search input{flex:1;border:none;outline:none;padding:0 14px;font-size:13px;font-family:inherit}
+  .tb-search button{border:none;background:#ff8500;color:#fff;padding:0 16px;font-size:13px;cursor:pointer}
+  .tb-user{font-size:13px;opacity:.9}
+
+  .tb-fhead{background:#fff;border-bottom:1px solid var(--bd)}
+  .tb-wrap{max-width:980px;margin:0 auto;padding:0 16px}
+  .tb-fhead-in{display:flex;align-items:center;gap:16px;padding:18px 16px}
+  .tb-avatar{width:64px;height:64px;border-radius:6px;background:linear-gradient(135deg,#3f8fd8,#22589c);
+       color:#fff;font-size:32px;display:flex;align-items:center;justify-content:center;flex:none;
+       font-family:"Songti SC",serif}
+  .tb-finfo{flex:1;min-width:0}
+  .tb-fname{font-size:22px;font-weight:700;color:#222;letter-spacing:1px}
+  .tb-fname a{color:#222;text-decoration:none}
+  .tb-flv{font-size:12px;color:var(--gray);margin-top:8px}
+  .tb-follow{flex:none;background:var(--tb);color:#fff;border:none;padding:8px 22px;border-radius:4px;
+       font-size:14px;cursor:pointer}
+  .tb-follow:hover{background:var(--tb-d)}
+  .tb-stat{flex:none;color:var(--gray);font-size:13px;margin-left:8px}
+  .tb-stat b{color:var(--tb);font-weight:400}
+
+  .tb-tabs{background:#fff;border-bottom:1px solid var(--bd)}
+  .tb-tabs .tb-wrap{display:flex;gap:28px;padding:0 16px}
+  .tb-tabs span{padding:12px 2px;font-size:15px;color:#666;cursor:pointer;border-bottom:3px solid transparent}
+  .tb-tabs span.on{color:var(--tb);border-bottom-color:var(--tb);font-weight:600}
+
+  /* 列表 */
+  .tb-list{background:#fff;border:1px solid var(--bd);border-radius:4px;margin:14px 0;overflow:hidden}
+  .tb-colhead,.tb-thread{display:grid;grid-template-columns:56px 1fr 130px 66px;align-items:center}
+  .tb-colhead{background:#f7f8fa;color:var(--gray);font-size:12px;padding:9px 14px;border-bottom:1px solid #eee}
+  .tb-colhead .c4{text-align:center}
+  .tb-thread{padding:0 14px;border-bottom:1px solid #f1f1f1;cursor:pointer}
+  .tb-thread:last-child{border-bottom:none}
+  .tb-thread:hover{background:#f7fbff}
+  .tb-thread .cell{padding:13px 0}
+  .tb-badge{display:inline-block;font-size:11px;color:#fff;background:#ff5a5a;border-radius:3px;
+       padding:1px 6px;letter-spacing:1px}
+  .tb-badge.jing{background:#f0a020}
+  .tb-tt{font-size:15px;color:var(--link);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+       padding-right:10px}
+  .tb-thread:hover .tb-tt{color:#1a5da8;text-decoration:underline}
+  .tb-cau{font-size:13px;color:#666;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tb-cre{font-size:13px;color:var(--gray);text-align:center}
+  .tb-cre b{color:var(--tb);font-weight:400}
+  .tb-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e23b3b;
+       box-shadow:0 0 8px #e23b3b;margin-left:8px;vertical-align:middle;animation:pulse 1.6s infinite}
+  .tb-dot.hide{display:none}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.5}}
+
+  /* 详情 */
+  .tb-crumb{font-size:13px;color:#666;margin:16px 0 10px}
+  .tb-crumb a{color:var(--link);text-decoration:none;cursor:pointer}
+  .tb-crumb a:hover{text-decoration:underline}
+  .tb-detail{background:#fff;border:1px solid var(--bd);border-radius:4px;overflow:hidden}
+  .tb-dtitle{font-size:18px;font-weight:700;color:#222;padding:18px 20px;border-bottom:1px solid #f1f1f1;
+       line-height:1.6}
+  .tb-floor{display:flex;gap:14px;padding:18px 20px;border-bottom:1px solid #f1f1f1;position:relative}
+  .tb-fav{width:46px;height:46px;border-radius:5px;background:linear-gradient(135deg,#3f8fd8,#22589c);
+       color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;flex:none;
+       font-family:"Songti SC",serif}
+  .tb-fmain{flex:1;min-width:0}
+  .tb-fheadline{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gray);margin-bottom:10px}
+  .tb-fuser{font-size:14px;color:var(--tb);font-weight:600}
+  .tb-lzbadge{background:#e8f2fc;color:var(--tb);border-radius:3px;padding:1px 6px;font-size:11px}
+  .tb-ftext{font-size:15px;line-height:2;color:var(--txt);letter-spacing:.4px;word-break:break-word}
+  .tb-floorno{position:absolute;right:20px;bottom:14px;font-size:12px;color:#bbb}
+  .tb-facts{margin-top:12px;font-size:12px;color:var(--gray);display:flex;gap:18px}
+  .tb-facts span{cursor:pointer}
+  .tb-facts span:hover{color:var(--tb)}
+  .tb-lounge{margin-top:12px;background:#f7f8fa;border-radius:4px;padding:10px 14px}
+  .tb-lr{font-size:14px;line-height:1.9;color:#555;padding:4px 0;border-bottom:1px dashed #ececec}
+  .tb-lr:last-child{border-bottom:none}
+  .tb-lr b{color:var(--tb);font-weight:600}
+  .tb-lr.deep{padding-left:20px;color:#777}
+  .tb-replybar{background:#fff;border:1px solid var(--bd);border-radius:4px;margin:14px 0;padding:12px 16px;
+       display:flex;gap:12px;align-items:center;color:#aaa;font-size:14px}
+  .tb-replybar input{flex:1;border:1px solid #e0e0e0;border-radius:4px;padding:10px 14px;outline:none;
+       font-size:14px;font-family:inherit;color:#333}
+  .tb-replybar button{background:var(--tb);color:#fff;border:none;padding:10px 24px;border-radius:4px;
+       font-size:14px;cursor:pointer}
+  .tb-replybar button:hover{background:var(--tb-d)}
+
+  /* 用户主页 */
+  .tb-cau a.u-link{color:inherit;text-decoration:none;cursor:pointer}
+  .tb-cau a.u-link:hover{color:var(--tb);text-decoration:underline}
+  .tb-fuser.u-link{cursor:pointer;text-decoration:none}
+  .tb-fuser.u-link:hover{text-decoration:underline}
+  .user-card{background:#fff;border:1px solid var(--bd);border-radius:4px;padding:22px 24px;
+       display:flex;gap:20px;align-items:flex-start;margin-top:16px}
+  .user-av{width:84px;height:84px;border-radius:6px;background:linear-gradient(135deg,#3f8fd8,#22589c);
+       color:#fff;font-size:40px;display:flex;align-items:center;justify-content:center;flex:none;
+       font-family:"Songti SC",serif}
+  .user-main{flex:1;min-width:0}
+  .user-name{font-size:22px;font-weight:700;color:#222;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .user-name .tb-lzbadge{background:#e8f2fc;color:var(--tb);border-radius:3px;padding:1px 8px;font-size:12px;font-weight:400}
+  .user-sign{font-size:14px;color:#666;margin-top:10px;line-height:1.8;font-family:"Songti SC","Noto Serif SC",serif}
+  .user-meta{font-size:13px;color:var(--gray);margin-top:10px}
+  .user-meta b{color:var(--tb);font-weight:400}
+  .user-side{flex:none;display:flex;flex-direction:column;gap:12px;align-items:flex-end}
+  .user-stat{font-size:13px;color:var(--gray)}
+  .user-stat b{color:var(--tb);font-weight:400}
+  .user-sect{font-size:15px;color:#222;font-weight:700;margin:20px 0 10px;
+       border-left:4px solid var(--tb);padding-left:10px}
+
+  /* 神秘文件按钮 */
+  #fileBtn{position:fixed;right:26px;bottom:26px;width:60px;height:60px;border-radius:12px;
+       background:#111a20;border:1px solid #26414e;color:#8fd0e0;display:none;
+       align-items:center;justify-content:center;font-size:26px;cursor:pointer;z-index:20}
+  #fileBtn.on{display:flex;animation:fpulse 1.5s infinite}
+  @keyframes fpulse{0%,100%{box-shadow:0 0 0 0 rgba(120,190,215,.5)}70%{box-shadow:0 0 0 12px rgba(120,190,215,0)}}
+
+  /* 聊天窗 */
+  #chat{position:fixed;right:26px;bottom:26px;width:min(380px,90vw);height:min(520px,74vh);
+       background:#0c1216;border:1px solid #26414e;border-radius:12px;display:none;
+       flex-direction:column;overflow:hidden;z-index:30;box-shadow:0 20px 60px #000b}
+  #chat.on{display:flex}
+  .chat-head{height:44px;background:#122730;display:flex;align-items:center;gap:10px;padding:0 14px;
+       border-bottom:1px solid #1d3a45}
+  .chat-head .av{width:22px;height:22px;border-radius:50%;background:#2a4a58;display:flex;
+       align-items:center;justify-content:center;font-size:12px;color:#bfe0ea}
+  .chat-head .nm{font-size:13px;letter-spacing:2px;color:#cfe0e5}
+  .chat-head .x{margin-left:auto;cursor:pointer;color:#7d99a4;font-size:15px;padding:6px}
+  .chat-body{flex:1;overflow:auto;padding:16px}
+  .msg{max-width:82%;margin:10px 0;padding:10px 14px;border-radius:10px;font-size:14px;
+       line-height:1.9;letter-spacing:1px;word-break:break-word;white-space:pre-wrap}
+  .msg.them{background:#122029;color:#c3d2d8;border-top-left-radius:2px}
+  .msg.me{background:#1f3b33;color:#d3e6dd;margin-left:auto;border-top-right-radius:2px}
+  .msg.photo{padding:0;background:none}
+  .msg.photo img{width:100%;border-radius:8px;border:1px solid #26414e;display:block}
+  .chat-foot{display:flex;border-top:1px solid #1d3a45;background:#0a0f12}
+  .chat-foot input{flex:1;background:transparent;border:none;outline:none;color:#cfe0e5;
+       padding:14px 16px;font-size:13px;font-family:inherit}
+  .chat-foot button{border:none;background:#16303d;color:#cfe0e5;padding:0 18px;cursor:pointer;font-size:13px}
+  .chat-foot button:hover{background:#1d4252}
+  .typing span{display:inline-block;width:6px;height:6px;margin:0 1px;border-radius:50%;
+       background:#5f8ba0;animation:td 1.2s infinite}
+  .typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+  @keyframes td{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+</style>
+</head>
+<body>
+
+<!-- 门禁：贴吧登录页 -->
+<div id="gate">
+  <div class="tb-bar">
+    <div class="tb-bar-in">
+      <span class="tb-logo">贴吧<small>tieba.com</small></span>
+      <span class="tb-login-reg" style="margin-left:auto">还没有万度账号？<a>立即注册</a></span>
+    </div>
+  </div>
+
+  <div class="lg-body">
+    <div class="lg-card">
+      <div class="lg-head">
+        <div class="lg-avatar">黎</div>
+        <div>
+          <div class="lg-title">登录 万度贴吧</div>
+          <div class="lg-sub">登录后即可进入「黎明会吧」</div>
+        </div>
+      </div>
+      <div class="lg-tabs"><span class="on">密码登录</span><span>短信快捷登录</span></div>
+
+      <form id="loginForm">
+        <div class="lg-field">
+          <span class="ico">🔒</span>
+          <input id="key" placeholder="说一句你能对上的话。" autocomplete="off">
+        </div>
+        <div class="lg-row">
+          <label><input type="checkbox" checked style="vertical-align:-1px"> 下次自动登录</label>
+          <a>忘记密码？</a>
+        </div>
+        <button class="lg-btn" type="submit">登 录</button>
+      </form>
+
+      <div id="reply"></div>
+      <div class="lg-quote">“你不是想离开，你只是醒得太早。”</div>
+    </div>
+
+    <div class="lg-foot">
+      万度贴吧 · 全球最大的中文社区<br>
+    </div>
+  </div>
+</div>
+
+<!-- 贴吧风论坛 -->
+<div id="forum">
+  <div class="tb-bar">
+    <div class="tb-bar-in">
+      <span class="tb-logo">贴吧<small>tieba.com</small></span>
+      <div class="tb-search">
+        <input placeholder="搜索：黎明会吧" id="tbSearch">
+        <button>搜索</button>
+      </div>
+      <span class="tb-user">未登录</span>
+    </div>
+  </div>
+
+  <div class="tb-fhead">
+    <div class="tb-fhead-in tb-wrap">
+      <div class="tb-avatar">黎</div>
+      <div class="tb-finfo">
+        <div class="tb-fname"><a>黎明会吧</a></div>
+        <div class="tb-flv">等级 18 · 同行者之家 · 这里没有评判，没有说教</div>
+      </div>
+      <button class="tb-follow">+ 关注</button>
+      <div class="tb-stat">关注 <b>404</b> · 帖子 <b>7</b></div>
+    </div>
+  </div>
+
+  <div class="tb-tabs">
+    <div class="tb-wrap">
+      <span class="on">看贴</span><span>精品</span><span>图片</span><span>群组</span>
+    </div>
+  </div>
+
+  <div class="tb-wrap">
+    <!-- 主题列表 -->
+    <div id="listView" class="tb-list">
+      <div class="tb-colhead"><span class="c1">类型</span><span class="c2">标题</span><span class="c3">作者</span><span class="c4">回复</span></div>
+    </div>
+
+    <!-- 帖子详情 -->
+    <div id="threadView" style="display:none">
+      <div class="tb-crumb"><a id="crumbBack">黎明会吧</a> › <span id="crumbTitle"></span></div>
+      <div class="tb-detail">
+        <div class="tb-dtitle" id="dTitle"></div>
+        <div id="dFloors"></div>
+      </div>
+      <div class="tb-replybar">
+        <input placeholder="我也说一句……" readonly>
+        <button type="button">发表</button>
+      </div>
+    </div>
+
+    <!-- 用户主页 -->
+    <div id="userView" style="display:none">
+      <div class="tb-crumb"><a id="userBack">黎明会吧</a> › 用户 › 引路人07</div>
+      <div class="user-card">
+        <div class="user-av">引</div>
+        <div class="user-main">
+          <div class="user-name">引路人07<span class="tb-lzbadge">引路人</span></div>
+          <div class="user-sign">「我负责把人送到门口。推不推门，是他们自己的事。」</div>
+          <div class="user-meta">UID <b>40707</b> · 贴吧等级 <b>14</b> · 注册时间 <b>2023-07-07</b> · 常去的吧：<b>黎明会吧</b></div>
+        </div>
+        <div class="user-side">
+          <button class="tb-follow" id="userFollow">+ 关注</button>
+          <div class="user-stat">关注 <b>6</b> · 粉丝 <b>707</b> · 帖子 <b>11</b></div>
+        </div>
+      </div>
+      <div class="user-sect">TA 的帖子</div>
+      <div id="userPosts" class="tb-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 文件按钮 -->
+<div id="fileBtn" title="?">📄</div>
+
+<!-- 聊天窗 -->
+<div id="chat">
+  <div class="chat-head">
+    <div class="av">引</div>
+    <div class="nm" id="chatName">引路人</div>
+    <div class="x" id="chatClose">✕</div>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-foot">
+    <input id="chatInput" placeholder="打字……" autocomplete="off">
+    <button id="chatSend">发送</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var KEY='utm_forum_ok';
+  var gate=document.getElementById('gate'), forum=document.getElementById('forum');
+  var key=document.getElementById('key'), reply=document.getElementById('reply');
+
+  function norm(s){ return (s||'').replace(/[\s。！!，,、.·；;：:？?“”"'\u3000]/g,''); }
+
+  /* ====== 帖子数据 ====== */
+  var THREADS={
+    t1:{ op:{user:'版主',time:'2026-02-14',text:'欢迎来到黎明前的港湾。这里没有评判，没有说教。在这里我们互称“同行者”，愿启程之旅降临世间所有同行之人。'},
+         pin:'置顶', title:'欢迎来到黎明前的港湾', author:'版主', replies:4 },
+    t2:{ op:{user:'引路人-02',time:'2026-03-09',text:'欢迎同行者邀请身边同行之人，加入“白昼社”读书会。不必孤独地醒着。',
+             lounge:[
+               {user:'开出租的祥子',text:'读书会帮助了我脱离精神的苦海，引我来到这里，我即将前往彼岸前一定会邀请还在苦海挣扎的妈妈和妹妹加入读书会，领略那美妙的精神世界。'},
+               {user:'翩翩行舟',text:'还有一天我的引路人申请就完成啦！如此荣幸能成为观礼启程的引路人，1 年前加入读书会完全不敢想像。'},
+               {user:'小舟将渡',text:'我舍不得那盆绿萝。它会记得我吗。'},
+               {user:'引路人-04',text:'牵挂是最后的重量，放下它，你就会轻松。',deep:true},
+               {user:'小舟将渡',text:'那我再等等。',deep:true}
+             ]},
+         title:'欢迎同行者邀请身边同行之人，加入“白昼社”读书会，不必孤独地醒着', author:'引路人-02', replies:5 },
+    t3:{ op:{user:'闻人先生',time:'2026-03-11',text:'黑暗里待久了的人，会被光吸引。不是我们找到他们，是他们自己走向我们。'},
+         title:'黑暗里待久了的人，会被光吸引。', author:'闻人先生', replies:1, dot:true },
+    t4:{ op:{user:'引路人07',time:'2026-03-10',text:'03/8’O 本周导师课，由闻人先生主讲：《如何告别》。闻人先生作为引路人-01，见证了太多的启程，经历过漫长的黑暗，终将迎来黎明。见证者会不会痛。会。引路人的第一课，就是学会不痛。可有些人学不会。学不会的人，就把自己的名字，从名册上划掉。引路人都是被划掉的那一个，因为这里有他们必须等的人。'},
+         title:'03/8’O 本周导师课，由闻人先生主讲：《如何告别》', author:'引路人07', replies:8 }
+  };
+
+  /* 引路人07 主页专属帖子 */
+  var USER_THREADS={};
+  (function(){
+    var replies=[3,2,5,1,4,2,6,2,3,1];
+    for(var i=1;i<=10;i++){
+      USER_THREADS['u'+i]={
+        op:{user:'引路人07',time:'2026-03-08',text:'03/8’O 本周导师课。'},
+        title:'03/8’O 本周导师课', author:'引路人07', replies:replies[i-1]
+      };
+    }
+  })();
+
+  function getThread(id){ return THREADS[id]||USER_THREADS[id]; }
+
+  var listView=document.getElementById('listView');
+  var threadView=document.getElementById('threadView');
+  var dTitle=document.getElementById('dTitle');
+  var dFloors=document.getElementById('dFloors');
+  var crumbTitle=document.getElementById('crumbTitle');
+  var userView=document.getElementById('userView');
+  var userPosts=document.getElementById('userPosts');
+
+  function isU7(s){ return (s||'').replace(/[-\s　]/g,'')==='引路人07'; }
+
+  function renderList(){
+    Object.keys(THREADS).forEach(function(id){
+      var t=THREADS[id];
+      var u7=isU7(t.author);
+      var row=document.createElement('div');
+      row.className='tb-thread'; row.id=id; row.dataset.thread=id;
+      row.innerHTML=
+        '<span class="cell"><span class="tb-badge'+(t.pin?'':' jing')+'">'+(t.pin||'帖')+'</span></span>'
+        +'<span class="cell tb-tt">'+t.title+(t.dot?'<span class="tb-dot" id="dot3"></span>':'')+'</span>'
+        +'<span class="cell tb-cau">'+(u7?'<a class="u-link" data-u7="1">'+t.author+'</a>':t.author)+'</span>'
+        +'<span class="cell tb-cre"><b>'+t.replies+'</b></span>';
+      row.addEventListener('click',function(e){
+        var a=e.target.closest && e.target.closest('[data-u7]');
+        if(a){ e.stopPropagation(); openUser(); return; }
+        openThread(id);
+      });
+      listView.appendChild(row);
+    });
+  }
+
+  function openThread(id){
+    var t=getThread(id); if(!t) return;
+    var d=document.querySelector('#'+id+' .tb-dot'); if(d) d.classList.add('hide');
+
+    crumbTitle.textContent=t.title;
+    dTitle.textContent=t.title;
+
+    var op=t.op;
+    var u7=isU7(op.user);
+    var html='';
+    html+='<div class="tb-floor tb-lz">'
+      +'<div class="tb-fav">'+op.user.charAt(0)+'</div>'
+      +'<div class="tb-fmain">'
+      +'<div class="tb-fheadline"><span class="tb-fuser'+(u7?' u-link':'')+'"'+(u7?' data-u7="1"':'')+'>'+op.user+'</span>'
+      +'<span class="tb-lzbadge">楼主</span><span class="tb-ftime">'+op.time+'</span></div>'
+      +'<div class="tb-ftext">'+op.text+'</div>';
+    if(op.lounge){
+      html+='<div class="tb-lounge">';
+      op.lounge.forEach(function(r){
+        html+='<div class="tb-lr'+(r.deep?' deep':'')+'"><b>'+r.user+'：</b>'+r.text+'</div>';
+      });
+      html+='</div>';
+    }
+    html+='<div class="tb-facts"><span>回复</span><span>点赞</span></div>';
+    html+='</div><div class="tb-floorno">1楼</div></div>';
+    dFloors.innerHTML=html;
+
+    listView.style.display='none';
+    userView.style.display='none';
+    threadView.style.display='block';
+    window.scrollTo(0,0);
+  }
+
+  function backToList(){
+    threadView.style.display='none';
+    userView.style.display='none';
+    listView.style.display='block';
+    window.scrollTo(0,0);
+  }
+  document.getElementById('crumbBack').addEventListener('click',backToList);
+  document.getElementById('userBack').addEventListener('click',backToList);
+  dFloors.addEventListener('click',function(e){
+    if(e.target && e.target.dataset && e.target.dataset.u7) openUser();
+  });
+
+  /* ====== 用户主页：引路人07 ====== */
+  function renderUserPosts(){
+    var ids=['t4','u1','u2','u3','u4','u5','u6','u7','u8','u9','u10'];
+    var html='<div class="tb-colhead"><span class="c1">类型</span><span class="c2">标题</span><span class="c3">作者</span><span class="c4">回复</span></div>';
+    ids.forEach(function(id){
+      var t=getThread(id); if(!t) return;
+      html+='<div class="tb-thread" data-thread="'+id+'">'
+        +'<span class="cell"><span class="tb-badge jing">帖</span></span>'
+        +'<span class="cell tb-tt">'+t.title+'</span>'
+        +'<span class="cell tb-cau">'+t.author+'</span>'
+        +'<span class="cell tb-cre"><b>'+t.replies+'</b></span></div>';
+    });
+    userPosts.innerHTML=html;
+    userPosts.querySelectorAll('.tb-thread').forEach(function(row){
+      row.addEventListener('click',function(){ openThread(row.dataset.thread); });
+    });
+  }
+
+  function openUser(){
+    listView.style.display='none';
+    threadView.style.display='none';
+    userView.style.display='block';
+    renderUserPosts();
+    window.scrollTo(0,0);
+  }
+
+  var uFollow=document.getElementById('userFollow');
+  uFollow.addEventListener('click',function(){
+    if(uFollow.textContent.indexOf('已')>-1){
+      uFollow.textContent='+ 关注'; uFollow.style.background='';
+    }else{
+      uFollow.textContent='已关注'; uFollow.style.background='#888';
+    }
+  });
+
+  /* ====== 顶部搜索：搜“引路人07”进入用户主页 ====== */
+  var tbSearch=document.getElementById('tbSearch');
+  function doSearch(){
+    var nn=norm(tbSearch.value).toLowerCase();
+    if(!nn) return;
+    if(nn.indexOf('引路人07')>-1||nn.indexOf('引路人-07')>-1||nn.indexOf('引路人7')>-1
+      ||(nn.indexOf('引路人')>-1&&nn.indexOf('07')>-1)){
+      openUser();
+    }
+  }
+  tbSearch.parentElement.querySelector('button').addEventListener('click',doSearch);
+  tbSearch.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); doSearch(); } });
+
+  function enterForum(){
+    gate.style.display='none';
+    forum.style.display='block';
+    document.title='黎明会吧_万度贴吧';
+    window.scrollTo(0,0);
+    report();
+    setTimeout(enableFileBtn, 3000);
+    setTimeout(function(){ var d=document.querySelector('#t3 .tb-dot'); if(d) d.classList.add('hide'); }, 6000);
+  }
+
+  renderList();
+  report();
+
+  // 已经通过验证的会话，直接进入
+  try{ if(sessionStorage.getItem(KEY)==='1'){ enterForum(); } }catch(e){}
+
+  function verify(){
+    var v=norm(key.value);
+    if(v.indexOf('舍不得')>-1 && v.indexOf('准备好')>-1){
+      try{ sessionStorage.setItem(KEY,'1'); }catch(e){}
+      enterForum();
+    }else if(v.indexOf('舍不得')>-1 || v.indexOf('准备好')>-1){
+      reply.textContent='再想想后半句。桌上那份备忘录里，有。';
+    }else{
+      reply.textContent='对不上。这里的人只认一句话。';
+    }
+  }
+  document.getElementById('loginForm').addEventListener('submit',function(e){ e.preventDefault(); verify(); });
+  key.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); verify(); }
+  });
+
+  function report(){
+    try{ parent.postMessage({__arg:'nav', file:'entringpage.html', disp:'w-7x3k.net'}, '*'); }catch(e){}
+  }
+
+  /* ===== 文件按钮 → 引路人对话框 ===== */
+  var fileBtn=document.getElementById('fileBtn');
+  function enableFileBtn(){ fileBtn.classList.add('on'); }
+
+  var chat=document.getElementById('chat');
+  var chatBody=document.getElementById('chatBody');
+  var chatInput=document.getElementById('chatInput');
+  var autoDone=false;
+
+  fileBtn.addEventListener('click',function(){
+    fileBtn.style.display='none';
+    chat.classList.add('on');
+    if(!autoDone){ autoDone=true; runScript(); }
+  });
+  document.getElementById('chatClose').addEventListener('click',function(){
+    chat.classList.remove('on');
+    fileBtn.style.display='flex'; fileBtn.classList.add('on');
+  });
+
+  function addThem(){
+    var d=document.createElement('div');
+    d.className='msg them';
+    chatBody.appendChild(d);
+    chatBody.scrollTop=chatBody.scrollHeight;
+    return d;
+  }
+  function addMe(text){
+    var d=document.createElement('div');
+    d.className='msg me';
+    d.textContent=text;
+    chatBody.appendChild(d);
+    chatBody.scrollTop=chatBody.scrollHeight;
+  }
+
+  function typeInto(el,text,done){
+    var i=0;
+    var t=setInterval(function(){
+      if(i>=text.length){ clearInterval(t); if(done) done(); return; }
+      el.textContent+=text[i++];
+      chatBody.scrollTop=chatBody.scrollHeight;
+    },55);
+  }
+
+  var SCRIPT=[
+    '你来了。',
+    '但我记得，你说过“舍不得”。舍得很难，我不催。',
+    '如果只是想看看——去搜“白昼社”。那里讲得更明白。',
+    '别急着上台。先看看台下的人是怎么走上来的。'
+  ];
+
+  function runScript(){
+    var i=0;
+    function step(){
+      if(i>=SCRIPT.length) return;
+      var typing=addThem();
+      typing.innerHTML='<span class="typing"><span></span><span></span><span></span></span>';
+      setTimeout(function(){
+        typing.innerHTML='';
+        typeInto(typing,SCRIPT[i],function(){
+          i++;
+          setTimeout(step,1500);
+        });
+      },650);
+    }
+    step();
+  }
+
+  function send(){
+    var v=chatInput.value.trim();
+    if(!v) return;
+    addMe(v);
+    chatInput.value='';
+    setTimeout(function(){ var t=addThem(); typeInto(t,'慢慢来。'); },700);
+  }
+  document.getElementById('chatSend').addEventListener('click',send);
+  chatInput.addEventListener('keydown',function(e){ if(e.key==='Enter') send(); });
+})();
+</script>
+</body>
+</html>

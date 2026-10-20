@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>选择</title>
+<!-- fiction marker：《光标之下》ARG 游戏道具 · 抉择页。全部内容为虚构。心理援助热线 12356。 -->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#eef7f0;color:#284238;
+       font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+       min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.6;
+    background-image:radial-gradient(rgba(46,139,87,.06) 1px,transparent 1px);background-size:24px 24px}
+
+  .box{position:relative;z-index:1;width:min(560px,94vw);background:#fff;border:1px solid #cfe6d8;
+    border-radius:18px;padding:40px 38px;box-shadow:0 20px 60px rgba(46,139,87,.16)}
+
+  .tag{font-size:11px;color:#8aa89a;letter-spacing:3px;margin-bottom:22px;
+    font-family:"Consolas",monospace}
+  .q{font-size:15px;color:#4a6b5c;line-height:2.1;letter-spacing:1px}
+  .q b{color:#1d5e39}
+  .big{font-size:24px;color:#1d5e39;letter-spacing:3px;margin:14px 0 26px}
+
+  .reveal{border-left:3px solid #d9553f;background:#fdf1ee;color:#8a4032;padding:14px 18px;
+    font-size:13px;line-height:2;letter-spacing:1px;margin-bottom:26px;border-radius:0 8px 8px 0}
+  .reveal b{color:#a83a28}
+
+  .btns{display:flex;gap:14px;flex-wrap:wrap}
+  .btn{flex:1 1 200px;height:56px;border:none;border-radius:12px;font-size:16px;letter-spacing:4px;
+    cursor:pointer;font-family:inherit;font-weight:600;transition:transform .15s,box-shadow .2s,background .2s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.yes{background:#c0392b;color:#fff;box-shadow:0 8px 22px rgba(192,57,43,.28)}
+  .btn.yes:hover{background:#a53125}
+  .btn.no{background:#f0f5f2;color:#3f6a5a;border:1.5px solid #cfe6d8}
+  .btn.no:hover{background:#e6f2ea}
+
+  .result{display:none;text-align:center;padding:10px 0 4px}
+  .result .ic{font-size:52px;margin-bottom:16px}
+  .result h2{font-size:22px;letter-spacing:3px;margin-bottom:14px}
+  .result p{font-size:14px;color:#5f8172;line-height:2.1;letter-spacing:1px}
+  .result a{display:inline-block;margin-top:22px;color:#2e8b57;text-decoration:none;letter-spacing:2px;
+    border-bottom:1px solid #9ccdb6;padding-bottom:2px}
+  .result a:hover{color:#1d5e39}
+  .result.ok h2{color:#2e8b57}
+  .result.stop h2{color:#8a4032}
+
+  @media(max-width:480px){
+    .box{padding:30px 22px}
+    .big{font-size:20px}
+  }
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="tag">《光标之下》· 抉择</div>
+
+  <div id="ask">
+    <div class="q">你已经看完了那份名册。<br>现在，做出你的选择。</div>
+    <div class="big">引路人07，是周义。</div>
+
+    <div class="reveal">
+      名册背后那个真正的名字，是<b>周义</b>。<br>
+      是你的父亲。
+    </div>
+
+    <div class="btns">
+      <button class="btn yes" id="btnYes">报 警</button>
+      <button class="btn no" id="btnNo">不 报 警</button>
+    </div>
+  </div>
+
+  <div class="result" id="resYes">
+    <div class="ic ok">📞</div>
+    <h2>你拿起了电话。</h2>
+    <p>有些东西不该由一个人独自背负。<br>把名册、日志、截图，交给能处理它的人。<br>这或许救不了已经走的人，但能拦住下一个。</p>
+    <p style="margin-top:16px;color:#8a9a92;font-size:12px">若你或身边的人正被类似念头困扰，请拨打心理援助热线 12356（24 小时）。</p>
+    <a href="ending.html">继续 →</a>
+  </div>
+
+  <div class="result stop" id="resNo">
+    <div class="ic">🕯️</div>
+    <h2>你合上了电脑。</h2>
+    <p>灯还亮着，名册里还有下一个灰色的名字。<br>有些沉默，本身就是一种回答。</p>
+    <a href="ending.html">继续 →</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  try{ parent.postMessage({__arg:'nav', file:'choice.html', disp:'抉择'}, '*'); }catch(e){}
+
+  var ask=document.getElementById('ask');
+  var resYes=document.getElementById('resYes'), resNo=document.getElementById('resNo');
+
+  function finish(res){
+    ask.style.display='none';
+    res.style.display='block';
+    window.scrollTo(0,0);
+  }
+  document.getElementById('btnYes').addEventListener('click',function(){ finish(resYes); });
+  document.getElementById('btnNo').addEventListener('click',function(){
+    finish(resNo);
+    setTimeout(function(){ location.href='ending.html'; },2200);
+  });
+})();
+</script>
+</body>
+</html>

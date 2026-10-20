@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>加密文档3 · 种子名录</title>
+<!-- fiction marker：《光标之下》ARG 游戏道具 · 加密文档3（种子名录）。全部内容为虚构。心理援助热线 12356。 -->
+<style>
+  :root{
+    --bg:#eef7f0;
+    --leaf:#2e8b57;
+    --leaf-d:#1d5e39;
+    --leaf-l:#8fd6ab;
+    --red:#d9553f;
+    --red-d:#a83a28;
+    --gray:#98a29c;
+    --gray-d:#6f7a74;
+    --ink:#284238;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);
+       font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+       min-height:100vh;padding:0 0 60px}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6;
+    background-image:radial-gradient(rgba(46,139,87,.06) 1px,transparent 1px);
+    background-size:24px 24px}
+
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:44px 24px 0}
+
+  .tag{font-size:12px;color:#8aa89a;letter-spacing:3px;margin-bottom:20px;
+       font-family:"Consolas","Courier New",monospace}
+  .head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .head h1{font-size:26px;letter-spacing:4px;color:var(--leaf-d)}
+  .head .lock{font-size:11px;color:#4a9a72;border:1px solid #9ccdb6;background:#e2f4ea;
+       padding:3px 10px;border-radius:12px;letter-spacing:2px}
+  .head .sub{font-size:12px;color:#7fa38f;letter-spacing:1px;margin-left:auto}
+  .desc{font-size:13px;color:#7fa38f;letter-spacing:1px;margin:12px 0 6px;line-height:2}
+
+  /* 树容器 */
+  .treebox{position:relative;margin-top:18px;background:
+    linear-gradient(180deg,rgba(226,244,234,.6),rgba(238,247,240,0));
+    border:1px solid #cfe6d8;border-radius:16px;padding:26px 22px 40px;overflow-x:auto}
+
+  .tree{position:relative;z-index:2;min-width:980px}
+
+  /* 根节点 */
+  .rootname{display:inline-block;position:relative;left:50%;transform:translateX(-50%);
+    background:#eafaf0;border:2px solid var(--leaf);color:var(--leaf-d);
+    font-size:18px;letter-spacing:3px;font-weight:700;padding:12px 34px;border-radius:28px;
+    box-shadow:0 6px 18px rgba(46,139,87,.22);z-index:3}
+  /* 树干：根到主干横梁 */
+  .rootstem{position:relative;width:6px;height:30px;margin:0 auto;
+    background:linear-gradient(180deg,var(--leaf),var(--leaf-l));border-radius:3px}
+
+  /* 主干横梁（连接各主枝） */
+  .busline{position:relative;height:2px;margin:0 60px;
+    background:linear-gradient(90deg,var(--leaf-l),var(--leaf),var(--leaf-l));border-radius:2px}
+
+  /* 主枝列 */
+  .columns{display:flex;justify-content:center;gap:22px;margin-top:0;align-items:flex-start}
+  .col{flex:1 1 0;min-width:180px;max-width:230px;display:flex;flex-direction:column;align-items:center;
+       padding-top:34px;position:relative}
+  /* 主枝竖直枝干 */
+  .col::before{content:"";position:absolute;top:0;left:50%;width:5px;height:34px;transform:translateX(-50%);
+    background:linear-gradient(180deg,var(--leaf),var(--leaf-l));border-radius:3px}
+  .colhead{font-size:12px;color:#8aa89a;letter-spacing:2px;margin-bottom:10px}
+  .colhead b{color:#5f8a74}
+
+  /* 姓名叶 */
+  .leaf{position:relative;width:100%;margin:6px 0;padding:11px 14px;border-radius:12px;
+    background:#fff;border:1.5px solid #cfe6d8;display:flex;align-items:center;gap:10px;
+    box-shadow:0 4px 14px rgba(46,139,87,.08);transition:transform .2s,box-shadow .2s}
+  .leaf:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(46,139,87,.18)}
+  .leaf .node{width:10px;height:10px;border-radius:50%;flex:none;background:var(--gray)}
+  .leaf .nm{font-size:15px;letter-spacing:2px;font-weight:600}
+  .leaf .tag{margin-left:auto;font-size:10px;letter-spacing:1px;padding:3px 8px;border-radius:11px;
+    white-space:nowrap}
+
+  /* 红：S级种子 */
+  .leaf.red{border-color:#eec3bb}
+  .leaf.red .node{background:var(--red);box-shadow:0 0 0 4px rgba(217,85,63,.18)}
+  .leaf.red .nm{color:var(--red-d)}
+  .leaf.red .tag{color:#fff;background:var(--red)}
+  .leaf.red::after{content:"";position:absolute;inset:0;border-radius:12px;pointer-events:none;
+    box-shadow:0 0 0 0 rgba(217,85,63,.5);animation:seedpulse 2.2s infinite}
+  @keyframes seedpulse{0%{box-shadow:0 0 0 0 rgba(217,85,63,.4)}70%{box-shadow:0 0 0 10px rgba(217,85,63,0)}100%{box-shadow:0 0 0 0 rgba(217,85,63,0)}}
+
+  /* 灰：A级响应 / 高倾向 */
+  .leaf.gray{border-color:#dfe5e1;background:#f6f8f7}
+  .leaf.gray .node{background:var(--gray);box-shadow:none}
+  .leaf.gray .nm{color:var(--gray-d)}
+  .leaf.gray .tag{color:#7f8a84;background:#e8ece9;border:1px solid #d5dcd7}
+
+  /* 分页 */
+  .pager{margin-top:34px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+    padding-top:20px;border-top:1px dashed #cfe6d8}
+  .pg{min-width:30px;height:30px;line-height:28px;text-align:center;font-size:12px;color:#5f8a74;
+    border:1px solid #cfe6d8;background:#fff;border-radius:7px;cursor:default;padding:0 6px;
+    font-family:"Consolas",monospace}
+  .pg:hover{background:#f0faf4}
+  .pg.on{color:#fff;background:var(--leaf);border-color:var(--leaf);font-weight:700}
+  .pg.dots{color:#b8cec2;border:none;background:transparent}
+  .pager .info{margin-left:auto;font-size:12px;color:#7fa38f;letter-spacing:1px}
+
+  .foot{margin-top:34px;text-align:center;font-size:11px;color:#9ab5a7;letter-spacing:1px;line-height:2}
+
+  /* 右下角提示框 */
+  #prompt{position:fixed;right:22px;bottom:22px;z-index:60;width:min(330px,86vw);
+    background:#fff;border:1px solid #9ccdb6;border-radius:16px;padding:20px 20px 18px;
+    box-shadow:0 16px 44px rgba(46,139,87,.24);
+    opacity:0;transform:translateY(24px);pointer-events:none;
+    transition:opacity .5s,transform .5s}
+  #prompt.show{opacity:1;transform:translateY(0);pointer-events:auto}
+  #prompt .ptag{font-size:10px;color:#8aa89a;letter-spacing:2px;margin-bottom:10px;
+    font-family:"Consolas",monospace}
+  #prompt .pq{font-size:14px;color:#284238;line-height:1.9;letter-spacing:1px}
+  #prompt .pq b{color:#1d5e39}
+  #prompt .pfield{display:flex;align-items:center;gap:8px;border:1.5px solid #cfe6d8;border-radius:10px;
+    padding:0 12px;height:44px;background:#f7fbf8;margin-top:12px}
+  #prompt .pfield:focus-within{border-color:#2e8b57;box-shadow:0 0 0 3px rgba(46,139,87,.12)}
+  #prompt .pfield span{color:#8aa89a}
+  #prompt input{flex:1;border:none;outline:none;background:transparent;font-size:15px;letter-spacing:2px;
+    font-family:inherit;color:#284238}
+  #prompt .preply{margin-top:10px;font-size:12px;letter-spacing:1px;color:#c0392b;min-height:1.4em}
+  #prompt .pgo{width:100%;height:42px;margin-top:6px;border:none;border-radius:10px;background:#2e8b57;
+    color:#fff;font-size:14px;letter-spacing:5px;cursor:pointer;font-family:inherit}
+  #prompt .pgo:hover{background:#1d5e39}
+  #prompt.shake{animation:gsh .4s}
+  @keyframes gsh{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+</style>
+</head>
+<body>
+<div class="wrap" id="content">
+  <div class="tag">YIJIA-PSY.COM / LOGS / ARCHIVE_03 / SEED-CATALOG</div>
+  <div class="head">
+    <h1>种子名录</h1>
+    <span class="lock">🔓 已解密</span>
+    <span class="sub"> 全 102 页</span>
+  </div>
+  <div class="desc">
+    archive_03.dat · 密级：深 —— 以“引路人07”为根，逐级分枝的名册。红名者为核心种子，灰名者为待响应 / 高倾向对象。
+  </div>
+
+  <div class="treebox">
+    <div class="tree">
+      <div class="rootname" id="root"></div>
+      <div class="rootstem"></div>
+      <div class="busline"></div>
+      <div class="columns" id="columns"></div>
+    </div>
+  </div>
+
+  <div class="pager" id="pager"></div>
+
+  <div class="foot">
+    本页面为《光标之下》ARG 游戏道具 · 全部内容为虚构<br>
+    心理援助热线 12356（24 小时）
+  </div>
+</div>
+
+<!-- 右下角提示框 -->
+<div id="prompt">
+  <div class="ptag">ARCHIVE_03 / SEED-CATALOG / QUIZ</div>
+  <div class="pq">引路人07 是 <b>_____</b>。</div>
+  <div class="pfield"><span>&gt;</span><input id="pkey" autocomplete="off" placeholder="输入姓名"></div>
+  <div class="preply" id="preply"></div>
+  <button class="pgo" id="pgo">确 认</button>
+</div>
+
+<script>
+(function(){
+  try{ parent.postMessage({__arg:'nav', file:'doc3.html', disp:'yijia-psy.com/文档3'}, '*'); }catch(e){}
+
+  var ROOT='引路人07';
+
+  /* 第一页 20 个姓名，分四主枝 */
+  var COLUMNS=[
+    { name:'亲属链',
+      people:[
+        {n:'周俊', s:'red',  t:'S级种子，亲属链已激活'},
+        {n:'周凯', s:'gray', t:'A级响应'},
+        {n:'周敏', s:'gray', t:'高倾向'},
+        {n:'周成', s:'gray', t:'高倾向'},
+        {n:'周兰', s:'red',  t:'S级种子'}
+      ]},
+    { name:'读书会',
+      people:[
+        {n:'陈知白', s:'gray', t:'高倾向'},
+        {n:'林晚舟', s:'red',  t:'S级种子'},
+        {n:'苏见山', s:'gray', t:'A级响应'},
+        {n:'郑无咎', s:'gray', t:'高倾向'},
+        {n:'何清野', s:'gray', t:'观察'}
+      ]},
+    { name:'同行者',
+      people:[
+        {n:'叶引之', s:'gray', t:'高倾向'},
+        {n:'顾南枝', s:'red',  t:'S级种子'},
+        {n:'沈既明', s:'gray', t:'高倾向'},
+        {n:'白露生', s:'gray', t:'观察'},
+        {n:'慕长庚', s:'gray', t:'A级响应'}
+      ]},
+    { name:'待响应',
+      people:[
+        {n:'徐怀山', s:'gray', t:'观察'},
+        {n:'江浸月', s:'gray', t:'高倾向'},
+        {n:'闻人陌', s:'gray', t:'观察'},
+        {n:'柳依风', s:'gray', t:'高倾向'},
+        {n:'程可渡', s:'gray', t:'观察'}
+      ]}
+  ];
+
+  document.getElementById('root').textContent=ROOT;
+
+  var box=document.getElementById('columns');
+  COLUMNS.forEach(function(col){
+    var d=document.createElement('div');
+    d.className='col';
+    var html='<div class="colhead">枝 <b>'+col.name+'</b> · '+col.people.length+' 人</div>';
+    col.people.forEach(function(p){
+      html+='<div class="leaf '+(p.s==='red'?'red':'gray')+'">'
+        +'<span class="node"></span>'
+        +'<span class="nm">'+p.n+'</span>'
+        +'<span class="tag">'+p.t+'</span>'
+        +'</div>';
+    });
+    d.innerHTML=html;
+    box.appendChild(d);
+  });
+
+  function buildPager(){
+    var pager=document.getElementById('pager');
+    var html='';
+    for(var p=1;p<=100;p++){
+      if(p>8 && p<98){ continue; }
+      html+='<span class="pg'+(p===1?' on':'')+'">'+p+'</span>';
+      if(p===8) html+='<span class="pg dots">…</span>';
+    }
+    // 统计
+    var total=COLUMNS.reduce(function(a,c){return a+c.people.length;},0);
+    var reds=COLUMNS.reduce(function(a,c){return a+c.people.filter(function(p){return p.s==='red';}).length;},0);
+    html+='<span class="info">本页 '+total+' 人（红名 '+reds+'） · 共 100 页</span>';
+    pager.innerHTML=html;
+  }
+  buildPager();
+
+  /* ===== 阅读完毕后，右下角弹出提示框 ===== */
+  var prompt=document.getElementById('prompt'),
+      pkey=document.getElementById('pkey'), preply=document.getElementById('preply');
+  setTimeout(function(){ prompt.classList.add('show'); },1200);
+
+  function submitPrompt(){
+    var v=(pkey.value||'').trim();
+    if(v==='周义'||v==='zhouyi'||v==='ZhouYi'){
+      preply.style.color='#2e8b57';
+      preply.textContent='正确。他知道那个人是谁……';
+      pkey.disabled=true;
+      setTimeout(function(){ location.href='choice.html'; },700);
+    }else{
+      preply.style.color='#c0392b';
+      preply.textContent='不对。你没有读懂这份名册。';
+      prompt.classList.remove('shake'); void prompt.offsetWidth; prompt.classList.add('shake');
+      setTimeout(function(){ location.href='2desktop.html'; },900);
+    }
+  }
+  document.getElementById('pgo').addEventListener('click',submitPrompt);
+  pkey.addEventListener('keydown',function(e){ if(e.key==='Enter') submitPrompt(); });
+})();
+</script>
+</body>
+</html>

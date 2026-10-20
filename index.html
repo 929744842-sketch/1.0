@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>……</title>
+<!--
+  ═══════════════════════════════════════════════════════════
+  fiction marker：本页面是小说《光标之下》ARG 游戏开场。
+  你所看到的一切人物、组织、事件均为虚构。
+  如你或你认识的人正被类似念头困扰，请拨打中国心理援助热线
+  12356（24 小时）。
+  ═══════════════════════════════════════════════════════════
+-->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:#f0eded;color:#000;font-family:"Songti SC","Noto Serif SC",serif;
+       display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .screen{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:0;
+       aspect-ratio:16/9;width:min(100vw,177.78vh);height:min(100vh,56.25vw);
+       background:#ffffff url("calender.png") 300px no-repeat;}
+  .stage{position:relative;z-index:2;width:min(640px,88vw,150vh);padding:24px}
+  #lines{font-size:18px;line-height:2.4;letter-spacing:1.5px;min-height:12em;color:#000;
+       transition:opacity .8s}
+  #lines.hide{opacity:0}
+  #lines p{opacity:0;transition:opacity .5s}
+  #lines p.show{opacity:1}
+  #lines b{color:#000;font-weight:700}
+  .cursor{display:inline-block;width:.6em;height:1.1em;background:#000;
+          vertical-align:-2px;animation:bl 1s steps(1) infinite}
+  @keyframes bl{50%{opacity:0}}
+  #panel{margin-top:0;opacity:0;transition:opacity 1s}
+  #panel.show{opacity:1}
+  #panel .label{font-size:14px;color:#000;letter-spacing:3px;margin-bottom:12px}
+  #pwd{background:rgba(255,255,255,.6);border:1px solid #000;color:#000;padding:12px 16px;
+       width:min(360px,76vw);font-size:16px;letter-spacing:8px;text-align:center;
+       outline:none;border-radius:4px;font-family:inherit}
+  #pwd:focus{border-color:#000;background:rgba(255,255,255,.85)}
+  #pwd::placeholder{color:#555}
+  #reply{margin-top:16px;font-size:13px;color:#000;letter-spacing:2px;min-height:1.5em;font-weight:600;
+       text-shadow:0 0 5px rgba(255,255,255,.9)}
+  .shake{animation:sh .4s}
+  @keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .foot{position:fixed;bottom:14px;left:0;right:0;text-align:center;font-size:11px;
+        color:#000;letter-spacing:1px;z-index:2;text-shadow:0 0 5px rgba(255,255,255,.9)}
+</style>
+</head>
+<body>
+<div class="screen"></div>
+<div class="stage">
+  <div id="lines"></div>
+  <div id="panel">
+    <div class="label">[ 输入开机密码 ]</div>
+    <input id="pwd" placeholder="四位数字" inputmode="numeric" autocomplete="off" maxlength="4">
+    <div id="reply"></div>
+  </div>
+</div>
+<div class="foot">《光标之下》ARG · 全部内容为虚构 · 心理援助热线 12356（24 小时）</div>
+
+<script>
+(function(){
+  var LINES=[
+    "2026 年 2 月 25 日。",
+    "弟弟的电脑，警察让我来取。",
+    "结论已经下了：<b>自杀</b>，无他杀嫌疑。",
+    "我不信。"
+  ];
+  var box=document.getElementById('lines');
+  var panel=document.getElementById('panel');
+  var pwd=document.getElementById('pwd');
+  var reply=document.getElementById('reply');
+  var li=0;
+
+  function typeLine(html,done){
+    var p=document.createElement('p');
+    box.appendChild(p);
+    p.classList.add('show');
+    // 拆出纯文本用于逐字，但保留 <b> 需要特殊处理：逐字仅用于纯文本行
+    if(html.indexOf('<')>-1){
+      p.innerHTML=html;
+      setTimeout(done,520);
+      return;
+    }
+    var i=0,cursor=document.createElement('span');
+    cursor.className='cursor';
+    p.appendChild(cursor);
+    var t=setInterval(function(){
+      if(i>=html.length){clearInterval(t);cursor.remove();setTimeout(done,420);return;}
+      cursor.insertAdjacentText('beforebegin',html[i]);
+      i++;
+    },62);
+  }
+
+  function run(){
+    if(li<LINES.length){ typeLine(LINES[li++],run); }
+    else { revealPanel(); }
+  }
+
+  function revealPanel(){
+    setTimeout(function(){
+      box.classList.add('hide');
+      setTimeout(function(){
+        box.style.display='none';
+        panel.classList.add('show');
+        setTimeout(function(){pwd.focus();},200);
+      },820);
+    },700);
+  }
+  setTimeout(run,600);
+
+  function unlock(){
+    var v=(pwd.value||'').trim();
+    if(v==='0218'){
+      document.title='正在启动……';
+      location.href='2desktop.html';
+      return;
+    }
+    var s=document.querySelector('.stage');
+    s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake');
+    reply.textContent = v==='' ? '输入他的生日。' : '不是这个日子。再想想他的生日。';
+    pwd.value='';
+    pwd.focus();
+  }
+  pwd.addEventListener('keydown',function(e){ if(e.key==='Enter') unlock(); });
+})();
+</script>
+</body>
+</html>

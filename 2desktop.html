@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>桌面</title>
+<!--
+  fiction marker：《光标之下》ARG 游戏道具 · 桌面模拟。全部内容为虚构。
+  心理援助热线 12356（24 小时）。
+-->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",system-ui,sans-serif;user-select:none}
+  html,body{width:100vw;height:100vh;overflow:hidden}
+  body{
+    background:
+      url('familypics.png') center/contain no-repeat,
+      radial-gradient(1200px 800px at 72% 28%,rgba(70,110,140,.32),transparent 60%),
+      radial-gradient(900px 700px at 20% 82%,rgba(40,60,90,.38),transparent 62%),
+      linear-gradient(160deg,#12202b 0%,#0c141c 55%,#090d12 100%);
+    background-blend-mode: normal,overlay,overlay,normal;
+  }
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px);opacity:.25}
+
+  .desktop{padding:18px;display:flex;flex-direction:column;flex-wrap:wrap;height:calc(100vh - 42px);align-content:flex-start;gap:6px}
+  .icon{width:78px;height:92px;display:flex;flex-direction:column;align-items:center;
+    justify-content:flex-start;padding:8px 4px;border-radius:4px;cursor:default;position:relative;
+    border:1px solid transparent}
+  .icon:hover{background:rgba(255,255,255,.08)}
+  .icon.selected{background:rgba(120,170,210,.28);border-color:rgba(150,200,230,.5)}
+  .icon .glyph{font-size:34px;line-height:1;margin-bottom:8px;filter:drop-shadow(0 2px 3px #0008)}
+  .icon .name{color:#eef6fa;font-size:12px;text-align:center;word-break:break-all;
+    text-shadow:0 1px 3px #000;line-height:1.3}
+  .btn{position:absolute;top:2px;right:8px;height:8px;width:8px;border-radius:50%;
+    background:#e23b3b;box-shadow:0 0 8px #e23b3b;animation:pulse 1.6s infinite}
+  .btn.hide{display:none}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.55}}
+
+  /* 窗口 */
+  .window{position:absolute;background:#0f1419;border:1px solid #2a3a44;border-radius:6px;
+    box-shadow:0 18px 60px #000b;display:none;flex-direction:column;overflow:hidden;min-width:320px}
+  .window.active{display:flex}
+  .win-head{height:34px;background:#16303d;color:#dbe8ee;display:flex;align-items:center;
+    padding:0 6px 0 12px;justify-content:space-between;font-size:13px;cursor:default}
+  .win-head .t{letter-spacing:1px}
+  .win-btns span{display:inline-flex;width:40px;height:34px;align-items:center;justify-content:center;
+    cursor:pointer;font-size:15px;color:#9fb6c0}
+  .win-btns span:hover{background:rgba(255,255,255,.1)}
+  .win-body{flex:1;overflow:auto;background:#0b0f13;color:#c3cfd5;
+    font-family:"Songti SC","Noto Serif SC",serif}
+
+  /* 备忘录 */
+  .notepad{padding:26px 28px;font-size:16px;line-height:2.3;letter-spacing:1px}
+  .notepad .date{color:#5f7078;font-size:13px;letter-spacing:2px;margin-bottom:18px}
+  .notepad .q{color:#dfeaee}
+  .notepad .small{color:#5f7078;font-size:12px;margin-top:26px;letter-spacing:1px;line-height:1.9}
+
+  .recycle{padding:40px;text-align:center;color:#6d7d84;font-size:14px;letter-spacing:2px}
+  .recycle .big{font-size:44px;margin-bottom:14px;opacity:.6}
+
+  /* 任务栏 */
+  .taskbar{position:fixed;bottom:0;left:0;width:100%;height:42px;background:rgba(8,12,16,.9);
+    border-top:1px solid #1d2a32;display:flex;align-items:center;color:#cbd8de;backdrop-filter:blur(6px);z-index:99}
+  .start{width:52px;height:42px;display:flex;align-items:center;justify-content:center;font-size:19px;cursor:default}
+  .start:hover{background:rgba(255,255,255,.08)}
+  .tray{margin-left:auto;padding:0 18px;font-size:12px;text-align:right;color:#a9bcc4;line-height:1.25}
+</style>
+</head>
+<body>
+
+<div class="desktop" id="desktop">
+  <div class="icon" data-app="memo">
+    <div class="glyph">📝</div>
+    <div class="name">备忘录.txt</div>
+    <span class="btn" id="memoDot"></span>
+  </div>
+  <div class="icon" data-app="browser">
+    <div class="glyph">🌐</div>
+    <div class="name">浏览器</div>
+  </div>
+  <div class="icon" data-app="recycle">
+    <div class="glyph">🗑️</div>
+    <div class="name">回收站</div>
+  </div>
+</div>
+
+<!-- 备忘录窗口 -->
+<div class="window" id="win-memo" style="left:220px;top:120px;width:460px;height:360px">
+  <div class="win-head">
+    <div class="t">备忘录.txt — 记事本</div>
+    <div class="win-btns"><span data-close="win-memo">✕</span></div>
+  </div>
+  <div class="win-body">
+    <div class="notepad">
+      <div class="date">3 月 11 日</div>
+      <div class="q">他们说我快“到站”了。</div>
+      <div class="q">我准备好了，但舍不得。</div>
+      <div class="small">……</div>
+    </div>
+  </div>
+</div>
+
+<!-- 回收站窗口 -->
+<div class="window" id="win-recycle" style="left:300px;top:180px;width:340px;height:220px">
+  <div class="win-head">
+    <div class="t">回收站</div>
+    <div class="win-btns"><span data-close="win-recycle">✕</span></div>
+  </div>
+  <div class="win-body">
+    <div class="recycle"><div class="big">🗑️</div>回收站是空的。</div>
+  </div>
+</div>
+
+<div class="taskbar">
+  <div class="start">⊞</div>
+  <div class="tray" id="clock"></div>
+</div>
+
+<script>
+(function(){
+  var KEY='utm_memo_read';
+  var read = false;
+  try{ read = localStorage.getItem(KEY)==='1'; }catch(e){}
+  var dot=document.getElementById('memoDot');
+  if(read) dot.classList.add('hide');
+
+  var icons=document.querySelectorAll('.icon');
+  icons.forEach(function(ic){
+    ic.addEventListener('click',function(e){
+      e.stopPropagation();
+      icons.forEach(function(i){i.classList.remove('selected');});
+      ic.classList.add('selected');
+    });
+    ic.addEventListener('dblclick',function(){
+      var app=ic.dataset.app;
+      if(app==='browser'){
+        location.href='browser.html';
+      }else if(app==='memo'){
+        openWin('win-memo');
+        try{ localStorage.setItem(KEY,'1'); }catch(e){}
+        dot.classList.add('hide');
+      }else if(app==='recycle'){
+        openWin('win-recycle');
+      }
+    });
+  });
+
+  document.getElementById('desktop').addEventListener('click',function(){
+    icons.forEach(function(i){i.classList.remove('selected');});
+  });
+
+  function openWin(id){
+    document.querySelectorAll('.window').forEach(function(w){w.classList.remove('active');});
+    document.getElementById(id).classList.add('active');
+    bringFront(document.getElementById(id));
+  }
+  document.querySelectorAll('[data-close]').forEach(function(s){
+    s.addEventListener('click',function(){ document.getElementById(s.dataset.close).classList.remove('active'); });
+  });
+
+  var z=10;
+  function bringFront(el){ z++; el.style.zIndex=z; }
+
+  // 简单拖拽
+  document.querySelectorAll('.win-head').forEach(function(head){
+    var win=head.parentElement, drag=false, dx=0, dy=0;
+    head.addEventListener('mousedown',function(e){
+      if(e.target.closest('.win-btns')) return;
+      drag=true; bringFront(win);
+      var r=win.getBoundingClientRect(); dx=e.clientX-r.left; dy=e.clientY-r.top;
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove',function(e){
+      if(!drag) return;
+      win.style.left=(e.clientX-dx)+'px'; win.style.top=(e.clientY-dy)+'px';
+    });
+    document.addEventListener('mouseup',function(){drag=false;});
+  });
+
+  function tick(){
+    var d=new Date();
+    document.getElementById('clock').innerHTML=d.toLocaleDateString()+'<br>'+d.toLocaleTimeString();
+  }
+  tick(); setInterval(tick,1000);
+})();
+</script>
+</body>
+</html>

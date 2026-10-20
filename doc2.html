@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>加密文档2 · 全球高倾向人口热力地图</title>
+<!-- fiction marker：《光标之下》ARG 游戏道具 · 加密文档2。全部内容为虚构。心理援助热线 12356。 -->
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#05070a;color:#8fa2ab;font-family:"Consolas","Courier New",monospace;
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+       padding:48px 20px}
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;
+       background:repeating-linear-gradient(0deg,rgba(120,200,220,.02) 0 1px,transparent 1px 3px)}
+
+  .card{width:min(880px,96vw)}
+  .tag{font-size:12px;color:#3f5560;letter-spacing:3px;margin-bottom:24px}
+  .dhead{display:flex;align-items:center;gap:12px;font-size:18px;color:#cfe0e5;letter-spacing:2px}
+  .dhead .lock{margin-left:auto;font-size:11px;color:#8a6a6a;border:1px solid #3a2a2a;
+       padding:2px 10px;letter-spacing:2px}
+  .dsub{font-size:11px;color:#3f5560;letter-spacing:1px;margin:10px 0 20px}
+
+  .ptitle{font-size:13px;color:#7fd0b0;letter-spacing:2px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+  .ptitle .sub{margin-left:auto;font-size:11px;color:#5f7a72;letter-spacing:1px}
+
+  .map{position:relative;width:100%;height:min(66vh,560px);background:#0a1418;border:1px solid #1b2b34;
+       border-radius:8px;overflow:hidden;box-shadow:0 12px 50px rgba(0,0,0,.6)}
+  .map .grid{position:absolute;inset:0;background-image:
+       linear-gradient(rgba(120,200,220,.06) 1px,transparent 1px),
+       linear-gradient(90deg,rgba(120,200,220,.06) 1px,transparent 1px);
+       background-size:40px 40px}
+  .map .coast{position:absolute;inset:0;opacity:.18;
+       background:radial-gradient(60% 42% at 22% 40%,rgba(90,140,170,.5),transparent 60%),
+         radial-gradient(40% 46% at 55% 52%,rgba(90,140,170,.45),transparent 62%),
+         radial-gradient(34% 34% at 80% 74%,rgba(90,140,170,.4),transparent 62%)}
+  .hot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none}
+  @keyframes heatfade{0%,100%{opacity:.2}50%{opacity:1}}
+  .maplabel{position:absolute;left:12px;bottom:10px;font-size:10px;color:#3f6a78;letter-spacing:1px}
+  .maplegend{position:absolute;right:12px;bottom:10px;font-size:10px;color:#5f7a72;letter-spacing:1px;
+       display:flex;gap:12px;align-items:center}
+  .maplegend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .stat{margin-top:16px;display:flex;gap:26px;flex-wrap:wrap;font-size:12px;color:#5f7a72;letter-spacing:1px}
+  .stat b{color:#7fd0b0;font-weight:400}
+
+  .foot{margin-top:34px;font-size:11px;color:#2d3d45;letter-spacing:1px;line-height:2;text-align:center}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="tag">YIJIA-PSY.COM / LOGS / ARCHIVE_02 / DECRYPTED</div>
+  <div class="dhead">📄 文档2<span class="lock open">🔓 已解密</span></div>
+  <div class="dsub">archive_02.dat · 密级：中 · 全球高倾向人口热力地图</div>
+
+  <div class="ptitle">全球高倾向人口热力地图<span class="sub">随机取样 · 3000 人</span></div>
+  <div class="map" id="map">
+    <div class="coast"></div>
+    <div class="grid"></div>
+    <div class="maplabel">TENDENCY-HEATMAP / SAMPLE 3000 / SEED-CLASSIFIED</div>
+    <div class="maplegend">
+      <span><i style="background:#d97a6e"></i>S级种子</span>
+      <span><i style="background:#e89a50"></i>A级响应</span>
+      <span><i style="background:#e0be5a"></i>高倾向</span>
+      <span><i style="background:#7fd0b0"></i>观察</span>
+    </div>
+  </div>
+
+  <div class="stat">
+    <span>取样点：<b>3000</b></span>
+    <span>已聚簇：<b id="clusters">—</b></span>
+    <span>更新时间：<b id="now">—</b></span>
+  </div>
+
+  <div class="foot">
+    本页面为《光标之下》ARG 游戏道具 · 全部内容为虚构<br>
+    心理援助热线 12356（24 小时）
+  </div>
+</div>
+
+<script>
+(function(){
+  try{ parent.postMessage({__arg:'nav', file:'doc2.html', disp:'yijia-psy.com/文档2'}, '*'); }catch(e){}
+
+  var COLORS=['rgba(217,122,110,','rgba(232,154,80,','rgba(224,190,90,','rgba(127,208,176,'];
+
+  function buildHeatmap(){
+    var map=document.getElementById('map');
+
+    // 若干聚集中心，模拟“高倾向人口带”
+    var centers=[];
+    for(var k=0;k<9;k++){
+      centers.push({
+        x:8+Math.random()*84,
+        y:8+Math.random()*84,
+        r:6+Math.random()*14,
+        w:0.12+Math.random()*0.22
+      });
+    }
+
+    for(var i=0;i<3000;i++){
+      var x,y;
+      if(Math.random()<0.72){
+        var c=centers[Math.floor(Math.random()*centers.length)];
+        var ang=Math.random()*Math.PI*2;
+        var rad=Math.pow(Math.random(),1.7)*c.r;
+        x=c.x+Math.cos(ang)*rad;
+        y=c.y+Math.sin(ang)*rad;
+      }else{
+        x=Math.random()*100;
+        y=Math.random()*100;
+      }
+      x=Math.max(0,Math.min(100,x));
+      y=Math.max(0,Math.min(100,y));
+
+      var roll=Math.random();
+      var cIdx = roll<0.06 ? 0 : (roll<0.18 ? 1 : (roll<0.5 ? 2 : 3));
+      var col=COLORS[cIdx];
+      var a=(0.14+Math.random()*0.5).toFixed(2);
+      var s=(1.4+Math.random()*2.4).toFixed(1);
+
+      var d=document.createElement('div');
+      d.className='hot';
+      d.style.left=x+'%';
+      d.style.top=y+'%';
+      d.style.width=s+'px';
+      d.style.height=s+'px';
+      d.style.background=col+a+')';
+      d.style.boxShadow='0 0 '+(s*2.4)+'px '+col+a+')';
+      d.style.animation='heatfade '+(2.2+Math.random()*4.2).toFixed(1)+'s ease-in-out '+(Math.random()*4.5).toFixed(2)+'s infinite';
+      map.appendChild(d);
+    }
+
+    document.getElementById('clusters').textContent=centers.length;
+    var dt=new Date();
+    document.getElementById('now').textContent=
+      dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+
+      String(dt.getDate()).padStart(2,'0')+' '+
+      String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
+  }
+
+  buildHeatmap();
+})();
+</script>
+</body>
+</html>

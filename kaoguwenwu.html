@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>国家考古文物局</title>
+<!--
+  fiction marker：《光标之下》ARG 游戏道具 · 伪「国家考古文物局」官网（kaoguwenwu.com）。
+  内容全部为虚构。心理援助热线 12356（24 小时）。
+-->
+<style>
+  :root{
+    --sand:#e8dcc0;
+    --sand-d:#d8c8a4;
+    --brown:#6b4f2a;
+    --brown-d:#4a3618;
+    --terra:#a05a2c;
+    --ink:#3a2e1c;
+    --line:#b9a67e;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--sand);
+    color:var(--ink);
+    font-family:"SimSun","Songti SC",serif;
+    line-height:1.9;
+    font-size:15px;
+  }
+  /* 80 年代网格底纹 */
+  body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+    background-image:linear-gradient(rgba(107,79,42,.05) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(107,79,42,.05) 1px,transparent 1px);
+    background-size:22px 22px}
+
+  .page{position:relative;z-index:1;max-width:900px;margin:0 auto;background:#f4ecd8;
+    border-left:6px solid var(--brown);border-right:6px solid var(--brown);min-height:100vh;
+    box-shadow:0 0 40px rgba(74,54,24,.25)}
+
+  /* 页眉 */
+  header{background:linear-gradient(#6b4f2a,#4a3618);color:#f4ecd8;padding:18px 26px;
+    border-bottom:4px double var(--sand-d)}
+  .head-in{display:flex;align-items:center;gap:16px}
+  .emblem{width:52px;height:52px;flex:none;border:2px solid var(--sand-d);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(244,236,216,.1)}
+  .titles{flex:1;min-width:0}
+  .titles h1{font-size:26px;letter-spacing:6px;font-weight:700}
+  .titles .en{font-size:11px;letter-spacing:3px;color:#cdb98f;font-family:"Trebuchet MS",sans-serif;margin-top:4px}
+  .titles .slogan{font-size:12px;color:#e0d2ac;margin-top:6px;letter-spacing:2px}
+
+  /* 导航 */
+  nav{background:var(--sand-d);border-bottom:2px solid var(--brown)}
+  nav ul{list-style:none;display:flex;flex-wrap:wrap}
+  nav li{padding:11px 26px;font-size:15px;letter-spacing:3px;color:var(--brown-d);cursor:pointer;
+    border-right:1px solid var(--line)}
+  nav li:hover{background:#efe4c8;color:var(--terra)}
+  nav li.on{background:#6b4f2a;color:#f4ecd8;font-weight:700}
+
+  .content{padding:30px 34px 60px}
+  section.view{display:none;animation:fade .35s}
+  section.view.on{display:block}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+
+  h2.sec{font-size:20px;color:var(--brown-d);letter-spacing:4px;border-bottom:2px solid var(--line);
+    padding-bottom:10px;margin-bottom:22px;position:relative}
+  h2.sec::before{content:"◆";color:var(--terra);margin-right:10px;font-size:14px}
+  p{margin-bottom:16px;text-align:justify}
+  .lead{font-size:16px;color:var(--brown-d)}
+
+  .banner{border:1px solid var(--line);background:
+    repeating-linear-gradient(45deg,#e8dcc0 0 12px,#e2d4b4 12px 24px);
+    padding:30px 28px;margin-bottom:24px;text-align:center}
+  .banner .big{font-size:22px;color:var(--brown-d);letter-spacing:4px}
+  .banner .sm{font-size:13px;color:var(--brown);margin-top:10px;letter-spacing:2px}
+
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:22px 0}
+  .box{border:1px solid var(--line);background:#efe6d0;padding:16px 18px}
+  .box h3{font-size:15px;color:var(--terra);letter-spacing:2px;margin-bottom:8px}
+  .box p{font-size:14px;margin:0;color:var(--brown)}
+
+  details.news{border:1px solid var(--line);margin-bottom:10px;background:#efe6d0}
+  details.news summary{cursor:pointer;padding:12px 16px;font-size:15px;color:var(--brown-d);
+    list-style:none;display:flex;align-items:center;gap:10px}
+  details.news summary::-webkit-details-marker{display:none}
+  details.news summary::before{content:"▸";color:var(--terra);transition:transform .2s}
+  details.news[open] summary::before{transform:rotate(90deg)}
+  details.news .date{margin-left:auto;font-size:12px;color:#8a7a58}
+  details.news .nc{padding:0 18px 16px;font-size:14px;line-height:2;color:#4a3d28;text-align:justify}
+
+  /* 图片页 */
+  .report{border:1px solid var(--line);background:#fbf6ea;padding:26px 30px;margin-bottom:22px}
+  .report .rhead{text-align:center;border-bottom:2px solid var(--brown);padding-bottom:14px;margin-bottom:18px}
+  .report .rhead .paper{font-size:13px;color:var(--terra);letter-spacing:6px}
+  .report .rhead .rtitle{font-size:19px;color:var(--brown-d);letter-spacing:2px;margin-top:8px}
+  .report .rhead .rmeta{font-size:12px;color:#8a7a58;margin-top:10px;letter-spacing:1px}
+  .report .rbody{font-size:15.5px;line-height:2.2;color:#3a2e1c;text-align:justify}
+  .report .rbody .em{color:var(--terra);font-weight:700}
+  .rpic{margin-top:22px;text-align:center}
+  .rpic img{max-width:100%;border:1px solid var(--brown);padding:6px;background:#fff;
+    box-shadow:0 6px 20px rgba(74,54,24,.25)}
+  .rpic .cap{font-size:12px;color:#8a7a58;margin-top:10px;letter-spacing:1px}
+
+  /* 联系 */
+  .contact{border:1px solid var(--line);background:#efe6d0;padding:22px 26px;max-width:520px}
+  .contact .row{display:flex;gap:14px;padding:11px 0;border-bottom:1px dashed var(--line);font-size:14px}
+  .contact .row:last-child{border-bottom:none}
+  .contact .k{color:var(--brown);width:90px;flex:none}
+
+  footer{background:#4a3618;color:#cdb98f;text-align:center;padding:18px;font-size:12px;
+    letter-spacing:1px;line-height:2;border-top:4px double var(--sand-d)}
+  footer b{color:#e0d2ac;font-weight:400}
+
+  @media(max-width:600px){
+    .grid{grid-template-columns:1fr}
+    .content{padding:22px 18px 50px}
+    .titles h1{font-size:20px;letter-spacing:3px}
+    nav li{padding:10px 16px}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div class="head-in">
+      <div class="emblem">鼎</div>
+      <div class="titles">
+        <h1>国家考古文物局</h1>
+        <div class="slogan">保护文化遗产 · 传承华夏文明</div>
+        <div class="en">NATIONAL ARCHAEOLOGY &amp; RELICS BUREAU · kaoguwenwu.com</div>
+      </div>
+    </div>
+  </header>
+
+  <nav id="nav">
+    <ul>
+      <li class="on" data-tab="home">首 页</li>
+      <li data-tab="photo">图 片</li>
+      <li data-tab="public">公 益</li>
+      <li data-tab="contact">联 系</li>
+    </ul>
+  </nav>
+
+  <div class="content">
+    <!-- 首页 -->
+    <section class="view on" id="v-home">
+      <div class="banner">
+        <div class="big">廿载耕耘 · 薪火相传</div>
+        <div class="sm">自 1978 年建局以来，我局始终致力于文物保护与考古发掘事业</div>
+      </div>
+      <h2 class="sec">本局概况</h2>
+      <p class="lead">国家考古文物局是国家主管考古发掘与文物保护工作的职能机构，负责全国重点文物保护单位的调查、发掘、研究与展示工作。</p>
+      <p>我局现设有田野考古处、文物保护处、陈列展览处、资料信息中心等部门，并在全国设立 23 个考古工作站。多年来，我局在史前聚落、商周方国、秦汉简牍等领域取得了举世瞩目的成果。</p>
+      <div class="grid">
+        <div class="box"><h3>田野考古</h3><p>规范发掘流程，抢救性保护与主动性发掘并重，守护沉睡地下的历史。</p></div>
+        <div class="box"><h3>文物保护</h3><p>运用传统修复技艺与现代科技手段，延长文物的“生命”。</p></div>
+        <div class="box"><h3>陈列展览</h3><p>让文物走出库房，让更多人看见历史、读懂中国。</p></div>
+        <div class="box"><h3>学术研究</h3><p>整理研究出土文献，推动简牍学、考古学向前发展。</p></div>
+      </div>
+      <h2 class="sec">最新动态</h2>
+      <details class="news" open>
+        <summary>凼地村古墓发掘取得重要收获<span class="date">1997.10.09</span></summary>
+        <div class="nc">我局考古队在凼地村发现一座公元前 200 年左右的墓葬，出土简牍文书约二十件，为研究当时的行政与文书制度提供了珍贵实物资料。详见“图片”栏目。</div>
+      </details>
+      <details class="news">
+        <summary>文物保护修复技术培训班圆满结业<span class="date">1997.09.20</span></summary>
+        <div class="nc">本期培训班为期三个月，来自全国各地的 40 名基层文博工作者参加了青铜器、简牍保护等课程的学习。</div>
+      </details>
+    </section>
+
+    <!-- 图片 -->
+    <section class="view" id="v-photo">
+      <h2 class="sec">图片 · 1997 年考古重大发现</h2>
+      <div class="report">
+        <div class="rhead">
+          <div class="paper">考 古 简 报</div>
+          <div class="rtitle">凼地村发现公元前二百年前后墓葬</div>
+          <div class="rmeta">1997 年 10 月 9 日 · 国家考古文物局田野考古处</div>
+        </div>
+        <div class="rbody">
+          <p>本报讯 一九九七年十月九日，我局考古队在凼地村一处基建工地范围内，发现古代墓葬一座。经初步勘探与研究，该墓葬年代约为<b class="em">公元前 200 年左右</b>。</p>
+          <p>墓葬形制规整，随葬品较为丰富。尤为重要的是，墓中出土简牍文书约二十件。简牍字迹清晰，内容涉及行政往来、簿籍登记等，对研究当时的文书制度与社会生活具有重要价值。</p>
+          <p>据专家阅读，太史令夜候北维，见孛星芒角四出，贯紫微，指太一。上问："胡可却乎？"对曰："胡，疥癣也。臣所惧者，不在白登。"</p>
+          <p>"安在？"</p>   
+          <p>"在<b class="em">二千五百载后</b>。"</p>
+          <p>左右皆笑。太史令退，三日不食，占成，封其辞于石室。</p>
+          <p>... ...</p>
+          <p>太史公曰：白登之围，七日而解；此围也，<b class="em">二千五百载</b>而未解。围之者何人？曰：取者。被围者何人？曰：未生。未生者何罪？曰：无罪，而代受其燠。盖灾不生于灾之年，生于取之日——日正在今。</p>
+          <p>目前，出土简牍已运回我局文物保护处进行清理、拍照与脱水保护处理，后续研究将陆续展开。</p>
+        </div>
+        <div class="rpic">
+          <img src="ancient.png" alt="凼地村出土简牍文书">
+          <div class="cap">图：凼地村出土简牍文书（局部） · 约公元前 200 年</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 公益 -->
+    <section class="view" id="v-public">
+      <h2 class="sec">公益</h2>
+      <p class="lead">“文物进校园 · 历史进社区”是我局长期开展的社会公益活动。</p>
+      <p>我局每年组织巡回展览、专题讲座与文物保护知识普及活动，走进中小学校、社区与乡村，让更多人了解脚下这片土地的历史，共同参与文化遗产的保护。</p>
+      <div class="grid">
+        <div class="box"><h3>文物图片进校园</h3><p>向学校赠送高品质文物图片与图录，支持历史课堂。</p></div>
+        <div class="box"><h3>考古工地开放日</h3><p>定期向公众开放发掘现场，近距离感受考古工作。</p></div>
+      </div>
+    </section>
+
+    <!-- 联系 -->
+    <section class="view" id="v-contact">
+      <h2 class="sec">联系</h2>
+      <div class="contact">
+        <div class="row"><div class="k">通讯地址</div><div>本市 · 文华路 12 号</div></div>
+        <div class="row"><div class="k">邮政编码</div><div>100000</div></div>
+        <div class="row"><div class="k">电话</div><div>010-00000000</div></div>
+        <div class="row"><div class="k">邮箱</div><div>kaogu@kaoguwenwu.com</div></div>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    国家考古文物局 · kaoguwenwu.com<br>
+    本页面为《光标之下》ARG 游戏道具 · 全部内容为虚构 · 心理援助热线 12356（24 小时）
+  </footer>
+</div>
+
+<script>
+(function(){
+  var names={home:'首页',photo:'图片',public:'公益',contact:'联系'};
+  var nav=document.getElementById('nav');
+  try{ parent.postMessage({__arg:'nav', file:'kaoguwenwu.html', disp:'kaoguwenwu.com'}, '*'); }catch(e){}
+
+  function show(tab){
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('on'); });
+    document.getElementById('v-'+tab).classList.add('on');
+    nav.querySelectorAll('li').forEach(function(a){ a.classList.toggle('on', a.dataset.tab===tab); });
+    window.scrollTo(0,0);
+    var disp='kaoguwenwu.com'+(tab==='home'?'':'/'+names[tab]);
+    try{ parent.postMessage({__arg:'nav', file:'kaoguwenwu.html', disp:disp}, '*'); }catch(e){}
+  }
+  nav.addEventListener('click',function(e){
+    var a=e.target.closest('li[data-tab]'); if(a) show(a.dataset.tab);
+  });
+})();
+</script>
+</body>
+</html>
